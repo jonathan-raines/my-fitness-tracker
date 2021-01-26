@@ -56,8 +56,8 @@ class _MealsState extends State<Meals> {
             ),
             TextButton(
               onPressed: () async {
-                //barcode = await scanBarcode();
-                product = await getProduct('0037600495486');
+                barcode = await scanBarcode();
+                product = await getProduct(barcode);
                 Food food = Food(product: product);
                 foodList.add(food);
                 totalCalories += food.calculateCalories().toDouble();
