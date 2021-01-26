@@ -16,6 +16,7 @@ class _MealsState extends State<Meals> {
   int mealNumber = 1;
   String barcode;
   Product product;
+  double totalCalories = 0;
 
   void buildWidget(String name, double protein, double carbs, double fats) {
     children.add(Row(
@@ -44,6 +45,7 @@ class _MealsState extends State<Meals> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Text('Total Calories: $totalCalories'),
             TextButton(
               onPressed: () {},
               child: Icon(
@@ -58,6 +60,7 @@ class _MealsState extends State<Meals> {
                 product = await getProduct('0037600495486');
                 Food food = Food(product: product);
                 foodList.add(food);
+                totalCalories += food.calculateCalories().toDouble();
                 setState(() {
                   buildWidget(
                       food.product.productName,
