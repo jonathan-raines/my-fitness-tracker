@@ -1,9 +1,10 @@
 import 'package:openfoodfacts/openfoodfacts.dart';
 
 Future<Product> getProduct(String barcode) async {
-  ProductQueryConfiguration configuration = ProductQueryConfiguration(barcode,
-      language: OpenFoodFactsLanguage.GERMAN, fields: [ProductField.ALL]);
-  ProductResult result = await OpenFoodAPIClient.getProduct(configuration);
+  ProductQueryConfiguration configurations = ProductQueryConfiguration(barcode,
+      language: OpenFoodFactsLanguage.ENGLISH, fields: [ProductField.ALL]);
+
+  ProductResult result = await OpenFoodAPIClient.getProduct(configurations);
 
   if (result.status == 1) {
     return result.product;
