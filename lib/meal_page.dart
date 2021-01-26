@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_fitness_tracker/food_class.dart';
+import 'package:my_fitness_tracker/constants.dart';
 import 'package:my_fitness_tracker/services/open_food.dart';
 import 'services/barcode_scanner.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Meals extends StatefulWidget {
   @override
@@ -11,23 +10,52 @@ class Meals extends StatefulWidget {
 }
 
 class _MealsState extends State<Meals> {
-  final List<Food> foodList = [];
-  List<Widget> children = [];
-  int mealNumber = 1;
-  String barcode;
-  Product product;
-  double totalCalories = 0;
+  final List<Product> foodList = [];
+  final List<Widget> children = [];
+  double totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
 
   void buildWidget(String name, double protein, double carbs, double fats) {
     children.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Text('Name: $name'),
-        Text('Protein: $protein'),
-        Text('Carbs: $carbs'),
-        Text('Fats: $fats'),
+        Expanded(
+          child: Text(
+            'Name: $name',
+            overflow: TextOverflow.clip,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Protein: $protein',
+            overflow: TextOverflow.clip,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Carbs: $carbs',
+            overflow: TextOverflow.clip,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            'Fats: $fats',
+            overflow: TextOverflow.clip,
+          ),
+        ),
       ],
     ));
+  }
+
+  double calculateCalories(Product product) {
+    return (product.nutriments.proteinsServing * 4) +
+        (product.nutriments.fatServing * 9) +
+        (product.nutriments.carbohydratesServing * 4);
+  }
+
+  void calculateTotals(Product product) {
+    totalCalories += calculateCalories(product).toDouble();
+    totalProtein += product.nutriments.proteinsServing;
+    totalCarbs += product.nutriments.carbohydratesServing;
+    totalFats += product.nutriments.fatServing;
   }
 
   @override
@@ -37,43 +65,39 @@ class _MealsState extends State<Meals> {
         Column(
           children: children,
         ),
-        Divider(
-          height: 15,
-          thickness: 1,
-          color: Colors.black,
-        ),
+        mealDivider,
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text('Total Calories: $totalCalories'),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Total Calories: $totalCalories'),
+                Text('Total Protein: $totalProtein'),
+                Text('Total Carbs: $totalCarbs'),
+                Text('Total Fats: $totalFats'),
+              ],
+            ),
             TextButton(
               onPressed: () {},
-              child: Icon(
-                FontAwesomeIcons.plusCircle,
-                color: Colors.blue,
-                size: 30,
-              ),
+              child: addFoodButton,
             ),
             TextButton(
               onPressed: () async {
-                barcode = await scanBarcode();
-                product = await getProduct(barcode);
-                Food food = Food(product: product);
-                foodList.add(food);
-                totalCalories += food.calculateCalories().toDouble();
+                Product product;
+                product = await getProduct(await scanBarcode());
+                foodList.add(product);
+                calculateTotals(product);
+
                 setState(() {
                   buildWidget(
-                      food.product.productName,
-                      food.product.nutriments.proteinsServing,
-                      food.product.nutriments.carbohydratesServing,
-                      food.product.nutriments.fatServing);
+                      product.productName,
+                      product.nutriments.proteinsServing,
+                      product.nutriments.carbohydratesServing,
+                      product.nutriments.fatServing);
                 });
               },
-              child: Icon(
-                FontAwesomeIcons.barcode,
-                color: Colors.blue,
-                size: 30,
-              ),
+              child: scanBarcodeButton,
             ),
           ],
         ),
