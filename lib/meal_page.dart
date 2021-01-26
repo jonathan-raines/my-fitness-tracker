@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'food_macros.dart';
-import 'services/open_food.dart';
-import 'package:openfoodfacts/openfoodfacts.dart';
+import 'package:my_fitness_tracker/services/open_food.dart';
 import 'services/barcode_scanner.dart';
-import 'package:http/http.dart' as http;
+import 'package:openfoodfacts/openfoodfacts.dart';
 
 class Meals extends StatefulWidget {
   @override
@@ -11,11 +9,13 @@ class Meals extends StatefulWidget {
 }
 
 class _MealsState extends State<Meals> {
-  int mealNumber = 1;
+  final List<Product> foodList = [];
+  String barcode;
   Product product;
-  List<Food> foodList = [];
-  Food food = Food();
-  String barcodeRes;
+
+  Widget updateUI() {
+    return Text('No FOOD Selected');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,33 +23,16 @@ class _MealsState extends State<Meals> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Column(
-          children: [
-            Text(food.productName ?? '0'),
-            Text(food.servingSize ?? '0'),
-            Text(food.calories.toString() ?? '0'),
-            Text(food.protein.toString() ?? '0'),
-            Text(food.carbs.toString() ?? '0'),
-          ],
+          children: [updateUI()],
         ),
         Column(
           children: [
+            // ignore: deprecated_member_use
             FlatButton(
               onPressed: () async {
-                barcodeRes = await scanBarcode();
-                print(barcodeRes);
-                product = await getProduct(barcodeRes);
-
-                setState(() {
-                  food = Food(
-                    productName: product.productName,
-                    calories: product.nutriments.energy,
-                    carbs: product.nutriments.carbohydrates,
-                    protein: product.nutriments.proteins,
-                    fat: product.nutriments.fat,
-                    servingSize: product.servingSize,
-                  );
-                  foodList.add(food);
-                });
+                barcode = await scanBarcode();
+                product = await getProduct(barcode);
+                foodList.add(product);
               }, // scanBarcode(),
               child: Text('Scan Barcode'),
             ),
