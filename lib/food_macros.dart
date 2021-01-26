@@ -1,11 +1,12 @@
-class Macros {
-  String productName;
-  String servingSize;
+class Food {
+  String productName, servingSize;
+  double carbs, protein, fat, calories;
 
-  Macros({this.productName, this.servingSize});
-
-  factory Macros.fromJson(Map<String, dynamic> json) {
-    return Macros(
-        productName: json['productName'], servingSize: json['servingSize']);
-  }
+  Food(
+      {this.productName,
+      this.carbs,
+      this.protein,
+      this.fat,
+      this.calories,
+      this.servingSize});
 }
