@@ -1,6 +1,7 @@
-import 'package:openfoodfacts/model/parameter/SearchTerms.dart';
-import 'package:openfoodfacts/model/parameter/TagFilter.dart';
+import 'dart:convert';
+
 import 'package:openfoodfacts/openfoodfacts.dart';
+import 'package:http/http.dart' as http;
 
 Future<Product> getProduct(String barcode) async {
   ProductQueryConfiguration configurations = ProductQueryConfiguration(barcode,
@@ -15,22 +16,12 @@ Future<Product> getProduct(String barcode) async {
   }
 }
 
-Future<SearchResult> searchProduct() async {
-  var parameters = [
-    const OutputFormat(format: Format.JSON),
-    const PageSize(size: 15),
-    const SortBy(option: SortOption.POPULARITY),
-    const SearchSimple(active: true),
-    const SearchTerms(terms: ['kellog\'s', 'frosted', 'flakes']),
-    const TagFilter(
-        tagType: "categories", contains: true, tagName: "breakfast_cereals")
-  ];
+Future<dynamic> productSearchKeywords(String keywords) async {
+  final String url =
+      'https://world.openfoodfacts.org/cgi/search.pl?search_terms=$keywords&search_simple=1&action=process&json=1';
+  final response = await http.get(url);
 
-  ProductSearchQueryConfiguration configuration =
-      ProductSearchQueryConfiguration(
-    parametersList: parameters,
-    fields: [ProductField.ALL],
-  );
+  print(json.decode(response.body));
 
-  return await OpenFoodAPIClient.searchProducts(null, configuration);
+  return json.decode(response.body);
 }

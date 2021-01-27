@@ -80,9 +80,7 @@ class _MealsState extends State<Meals> {
             ),
             TextButton(
               onPressed: () async {
-                SearchResult searchResult;
-                searchResult = await searchProduct();
-                print(searchResult.count);
+                Navigator.pushNamed(context, '/search');
               },
               child: addFoodButton,
             ),
