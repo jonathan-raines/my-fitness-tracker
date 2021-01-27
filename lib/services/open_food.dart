@@ -1,3 +1,5 @@
+import 'package:openfoodfacts/model/parameter/SearchTerms.dart';
+import 'package:openfoodfacts/model/parameter/TagFilter.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
 Future<Product> getProduct(String barcode) async {
@@ -11,4 +13,24 @@ Future<Product> getProduct(String barcode) async {
   } else {
     throw new Exception("product not found, please insert data for " + barcode);
   }
+}
+
+Future<SearchResult> searchProduct() async {
+  var parameters = [
+    const OutputFormat(format: Format.JSON),
+    const PageSize(size: 15),
+    const SortBy(option: SortOption.POPULARITY),
+    const SearchSimple(active: true),
+    const SearchTerms(terms: ['kellog\'s', 'frosted', 'flakes']),
+    const TagFilter(
+        tagType: "categories", contains: true, tagName: "breakfast_cereals")
+  ];
+
+  ProductSearchQueryConfiguration configuration =
+      ProductSearchQueryConfiguration(
+    parametersList: parameters,
+    fields: [ProductField.ALL],
+  );
+
+  return await OpenFoodAPIClient.searchProducts(null, configuration);
 }

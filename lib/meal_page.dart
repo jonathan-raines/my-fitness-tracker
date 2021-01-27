@@ -79,7 +79,11 @@ class _MealsState extends State<Meals> {
               ],
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                SearchResult searchResult;
+                searchResult = await searchProduct();
+                print(searchResult.count);
+              },
               child: addFoodButton,
             ),
             TextButton(
