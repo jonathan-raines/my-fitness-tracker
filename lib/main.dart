@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_fitness_tracker/product_details.dart';
 import 'home_page.dart';
 import 'search_page.dart';
 
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MyHomePage(),
         '/search': (context) => SearchPage(),
+        '/details': (context) => ProductDetails(),
       },
     );
   }
