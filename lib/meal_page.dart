@@ -10,40 +10,7 @@ class Meals extends StatefulWidget {
 }
 
 class _MealsState extends State<Meals> {
-  final List<Product> foodList = [];
-  final List<Widget> children = [];
   double totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
-
-  void buildWidget(String name, double protein, double carbs, double fats) {
-    children.add(Row(
-      children: [
-        Expanded(
-          child: Text(
-            'Name: $name',
-            overflow: TextOverflow.clip,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            'Protein: $protein',
-            overflow: TextOverflow.clip,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            'Carbs: $carbs',
-            overflow: TextOverflow.clip,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            'Fats: $fats',
-            overflow: TextOverflow.clip,
-          ),
-        ),
-      ],
-    ));
-  }
 
   double calculateCalories(Product product) {
     return (product.nutriments.proteinsServing * 4) +
