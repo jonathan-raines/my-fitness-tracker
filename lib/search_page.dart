@@ -41,6 +41,7 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () async {
                 focusNode.unfocus();
                 result = await productSearchKeywords(searchKeywords);
+                // TODO Turn result.body into a Product object so it can be added to foodList
                 setState(() {
                   _buildProductList = [];
                   for (dynamic product in result['products']) {
