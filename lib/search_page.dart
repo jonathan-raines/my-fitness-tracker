@@ -46,7 +46,8 @@ class _SearchPageState extends State<SearchPage> {
                   for (dynamic product in result['products']) {
                     _buildProductList.add(GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/details');
+                          Navigator.pushNamed(context, '/details',
+                              arguments: product);
                         },
                         child: Text(product['product_name'])));
                   }
