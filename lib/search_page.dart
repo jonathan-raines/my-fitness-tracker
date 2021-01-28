@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openfoodfacts/model/Product.dart';
 import 'services/open_food.dart';
 
 class SearchPage extends StatefulWidget {
@@ -41,19 +42,18 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () async {
                 focusNode.unfocus();
                 result = await productSearchKeywords(searchKeywords);
-                // TODO Turn result.body into a Product object so it can be added to foodList
+
                 setState(() {
                   _buildProductList = [];
                   for (dynamic product in result['products']) {
                     _buildProductList.add(GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/details',
-                              arguments: product);
+                          Product newProduct = Product.fromJson(product);
+                          Navigator.pushNamed(context, '/details', arguments: newProduct);
                         },
                         child: Text(product['product_name'])));
                   }
                 });
-                //result['products'][0]['nutriscore_score']);
               },
               child: Text('Search'),
             ),
