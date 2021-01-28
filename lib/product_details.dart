@@ -12,6 +12,7 @@ class ProductDetails extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // TODO handle situation where serving sizes and macros per serving are not available
           Text(arguments['product_name']),
           Text('Serving Size: ${arguments['serving_size']}'),
           Text('Calories: ${arguments['nutriments']['energy-kcal_serving']}'),
