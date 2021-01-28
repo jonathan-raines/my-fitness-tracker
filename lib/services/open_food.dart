@@ -21,7 +21,5 @@ Future<dynamic> productSearchKeywords(String keywords) async {
       'https://world.openfoodfacts.org/cgi/search.pl?search_terms=$keywords&search_simple=1&action=process&json=1';
   final response = await http.get(url);
 
-  print(json.decode(response.body));
-
   return json.decode(response.body);
 }
