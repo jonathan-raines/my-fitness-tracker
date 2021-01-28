@@ -9,18 +9,9 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   String searchKeywords;
   dynamic result;
+  FocusNode focusNode = FocusNode();
 
-  Widget getQueryResults() {
-    //List<Widget> widgets = [];
-
-    //widgets.add(Text(result['products'][0]['brands']));
-
-    try {
-      return Text(result['products'][0]['product_name_fr']);
-    } catch (e) {
-      return Text('No food entered');
-    }
-  }
+  List<Widget> _buildProductList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +25,7 @@ class _SearchPageState extends State<SearchPage> {
           Padding(
             padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
             child: TextField(
+              focusNode: focusNode,
               decoration: InputDecoration(
                 hintText: 'Search for product',
                 border: OutlineInputBorder(),
@@ -47,16 +39,26 @@ class _SearchPageState extends State<SearchPage> {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () async {
+                focusNode.unfocus();
                 result = await productSearchKeywords(searchKeywords);
-
                 setState(() {
-                  getQueryResults();
+                  _buildProductList = [];
+                  for (dynamic product in result['products']) {
+                    _buildProductList.add(GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/details');
+                        },
+                        child: Text(product['product_name'])));
+                  }
                 });
+                //result['products'][0]['nutriscore_score']);
               },
               child: Text('Search'),
             ),
           ),
-          getQueryResults() ?? Text(''),
+          Column(
+            children: _buildProductList,
+          ),
         ],
       ),
     );
