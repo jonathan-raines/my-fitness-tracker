@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openfoodfacts/model/Product.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 import 'services/open_food.dart';
 
 class SearchPage extends StatefulWidget {
@@ -8,9 +9,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  String searchKeywords;
-  dynamic result;
+  SearchResult result;
   FocusNode focusNode = FocusNode();
+  final myController = TextEditingController();
 
   List<Widget> _buildProductList = [];
 
@@ -27,31 +28,57 @@ class _SearchPageState extends State<SearchPage> {
             padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
             child: TextField(
               focusNode: focusNode,
+              controller: myController,
               decoration: InputDecoration(
                 hintText: 'Search for product',
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
-                searchKeywords = value;
-              },
             ),
           ),
           Container(
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () async {
-                focusNode.unfocus();
-                result = await productSearchKeywords(searchKeywords);
+                focusNode.unfocus(); // hide keyboard upon starting search
+                result = await productSearchKeywords([myController.text]);
 
                 setState(() {
                   _buildProductList = [];
-                  for (dynamic product in result['products']) {
-                    _buildProductList.add(GestureDetector(
-                        onTap: () {
-                          Product newProduct = Product.fromJson(product);
-                          Navigator.pushNamed(context, '/details', arguments: newProduct);
-                        },
-                        child: Text(product['product_name'])));
+                  for (Product product in result.products) {
+                    _buildProductList.add(
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, '/details',
+                            arguments: product),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Name: ${product.productName}',
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                'Protein: ${product.nutriments.proteinsServing}',
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                'Carbs: ${product.nutriments.carbohydratesServing}',
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                'Fats: ${product.nutriments.fatServing}',
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
                   }
                 });
               },
