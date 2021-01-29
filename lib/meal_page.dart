@@ -18,15 +18,19 @@ class _MealsState extends State<Meals> {
         (product.nutriments.carbohydratesServing * 4);
   }
 
-  void calculateTotals(Product product) {
-    totalCalories += calculateCalories(product).toDouble();
-    totalProtein += product.nutriments.proteinsServing;
-    totalCarbs += product.nutriments.carbohydratesServing;
-    totalFats += product.nutriments.fatServing;
+  void calculateTotals(List<Product> foodList) {
+    totalCalories = totalProtein = totalCarbs = totalFats = 0;
+    for (Product product in foodList) {
+      totalCalories += calculateCalories(product).toDouble();
+      totalProtein += product.nutriments.proteinsServing;
+      totalCarbs += product.nutriments.carbohydratesServing;
+      totalFats += product.nutriments.fatServing;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    calculateTotals(foodList);
     return Column(
       children: [
         Column(
@@ -53,10 +57,8 @@ class _MealsState extends State<Meals> {
             ),
             TextButton(
               onPressed: () async {
-                Product product;
-                product = await getProduct(await scanBarcode());
+                Product product = await getProduct(await scanBarcode());
                 foodList.add(product);
-                calculateTotals(product);
 
                 setState(() {
                   buildWidget(
@@ -65,6 +67,7 @@ class _MealsState extends State<Meals> {
                       product.nutriments.carbohydratesServing,
                       product.nutriments.fatServing);
                 });
+                calculateTotals(foodList);
               },
               child: scanBarcodeButton,
             ),
