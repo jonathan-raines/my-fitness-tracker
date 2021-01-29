@@ -21,6 +21,7 @@ const scanBarcodeButton = Icon(
 
 final List<Product> foodList = [];
 final List<Widget> children = [];
+
 buildWidget(String name, double protein, double carbs, double fats) {
   children.add(Row(
     children: [
