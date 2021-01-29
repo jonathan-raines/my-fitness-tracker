@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_fitness_tracker/constants.dart';
 import 'package:my_fitness_tracker/services/open_food.dart';
-import 'services/barcode_scanner.dart';
+import '../services/barcode_scanner.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
 class Meals extends StatefulWidget {

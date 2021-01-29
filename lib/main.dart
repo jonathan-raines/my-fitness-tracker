@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_fitness_tracker/product_details.dart';
-import 'home_page.dart';
-import 'search_page.dart';
+import 'package:my_fitness_tracker/screens/product_details.dart';
+import 'screens/home_page.dart';
+import 'screens/search_page.dart';
 
 void main() => runApp(MyApp());
 

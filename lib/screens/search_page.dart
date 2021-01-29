@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openfoodfacts/model/Product.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
-import 'services/open_food.dart';
+import '../services/open_food.dart';
 
 class SearchPage extends StatefulWidget {
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openfoodfacts/model/Product.dart';
-import 'constants.dart';
+import '../constants.dart';
 
 class ProductDetails extends StatelessWidget {
   @override
