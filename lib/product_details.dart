@@ -11,27 +11,33 @@ class ProductDetails extends StatelessWidget {
       appBar: AppBar(
         title: Text('Product Details'),
       ),
-      body: Column(
-        children: [
-          // TODO handle situation where serving sizes and macros per serving are not available
-          // TODO look into narrowing search to items that contain those nutriment fields
-          Text('Product Name: ${product.productName}'),
-          Text(
-              'Protein: ${product.nutriments.proteinsServing.toInt().toString()}'),
-          Text(
-              'Carbs: ${product.nutriments.carbohydratesServing.toInt().toString()}'),
-          Text('Fats: ${product.nutriments.fatServing.toInt().toString()}'),
-          Column(
-            children: [
-              TextButton(
-                child: Text('Add Food'),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/');
-                },
-              ),
-            ],
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.network('${product.imgSmallUrl}'),
+            Text('Product Name: ${product.productName}'),
+            Text('Protein: ${product.nutriments.proteinsServing}'),
+            Text('Carbs: ${product.nutriments.carbohydratesServing}'),
+            Text('Fats: ${product.nutriments.fatServing}'),
+            Column(
+              children: [
+                TextButton(
+                  child: Text('Add Food'),
+                  onPressed: () {
+                    foodList.add(product);
+                    buildWidget(
+                        product.productName,
+                        product.nutriments.proteinsServing,
+                        product.nutriments.carbohydratesServing,
+                        product.nutriments.fatServing);
+                    Navigator.pushNamed(context, '/');
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
