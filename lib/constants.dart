@@ -1,6 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:openfoodfacts/model/Product.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 
 const addFoodButton = Icon(
   FontAwesomeIcons.plusCircle,
@@ -22,33 +23,30 @@ const scanBarcodeButton = Icon(
 final List<Product> foodList = [];
 final List<Widget> children = [];
 
-buildWidget(String name, double protein, double carbs, double fats) {
+buildWidget(Product product) {
   children.add(Row(
     children: [
       Expanded(
         child: Text(
-          'Name: $name',
-          overflow: TextOverflow.clip,
+          'Name: ${product.productName}',
         ),
       ),
       Expanded(
         child: Text(
-          'Protein: $protein',
-          overflow: TextOverflow.clip,
+          'Protein: ${product.nutriments.proteinsServing}',
         ),
       ),
       Expanded(
         child: Text(
-          'Carbs: $carbs',
-          overflow: TextOverflow.clip,
+          'Carbs: ${product.nutriments.carbohydratesServing}',
         ),
       ),
       Expanded(
         child: Text(
-          'Fats: $fats',
-          overflow: TextOverflow.clip,
+          'Fats: ${product.nutriments.fatServing}',
         ),
       ),
     ],
   ));
 }
+

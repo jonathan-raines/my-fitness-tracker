@@ -26,11 +26,7 @@ class ProductDetails extends StatelessWidget {
                   child: Text('Add Food'),
                   onPressed: () {
                     foodList.add(product);
-                    buildWidget(
-                        product.productName,
-                        product.nutriments.proteinsServing,
-                        product.nutriments.carbohydratesServing,
-                        product.nutriments.fatServing);
+                    buildWidget(product);
                     Navigator.pushNamed(context, '/');
                   },
                 ),

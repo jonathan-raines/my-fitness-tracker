@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_fitness_tracker/constants.dart';
-import 'package:my_fitness_tracker/services/open_food.dart';
-import '../services/barcode_scanner.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
+import '../services.dart';
+import '../constants.dart';
 
 class Meals extends StatefulWidget {
   @override
@@ -59,13 +58,8 @@ class _MealsState extends State<Meals> {
               onPressed: () async {
                 Product product = await getProduct(await scanBarcode());
                 foodList.add(product);
-
                 setState(() {
-                  buildWidget(
-                      product.productName,
-                      product.nutriments.proteinsServing,
-                      product.nutriments.carbohydratesServing,
-                      product.nutriments.fatServing);
+                  buildWidget(product);
                 });
                 calculateTotals(foodList);
               },
