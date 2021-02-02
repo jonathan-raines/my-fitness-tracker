@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:openfoodfacts/model/Product.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
-import '../services/open_food.dart';
+import '../services.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -10,7 +9,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   SearchResult result;
-  FocusNode focusNode = FocusNode();
+  final FocusNode focusNode = FocusNode();
   final myController = TextEditingController();
 
   List<Widget> _buildProductList = [];
@@ -54,25 +53,21 @@ class _SearchPageState extends State<SearchPage> {
                             Expanded(
                               child: Text(
                                 'Name: ${product.productName}',
-                                overflow: TextOverflow.clip,
                               ),
                             ),
                             Expanded(
                               child: Text(
                                 'Protein: ${product.nutriments.proteinsServing}',
-                                overflow: TextOverflow.clip,
                               ),
                             ),
                             Expanded(
                               child: Text(
                                 'Carbs: ${product.nutriments.carbohydratesServing}',
-                                overflow: TextOverflow.clip,
                               ),
                             ),
                             Expanded(
                               child: Text(
                                 'Fats: ${product.nutriments.fatServing}',
-                                overflow: TextOverflow.clip,
                               ),
                             ),
                           ],

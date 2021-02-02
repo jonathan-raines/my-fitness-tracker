@@ -26,18 +26,15 @@ class ProductDetails extends StatelessWidget {
             Text('Protein: ${product.nutriments.proteinsServing}'),
             Text('Carbs: ${product.nutriments.carbohydratesServing}'),
             Text('Fats: ${product.nutriments.fatServing}'),
-            SizedBox(
-              height: 30,
-            ),
-            SizedBox(
-              height: 50,
-              width: 100,
-              child: TextField(
-                keyboardType: TextInputType.number,
-                controller: myController,
-                decoration: InputDecoration(
-                  hintText: 'Servings: ',
-                  border: OutlineInputBorder(),
+            Column(
+              children: [
+                TextButton(
+                  child: Text('Add Food'),
+                  onPressed: () {
+                    foodList.add(product);
+                    buildWidget(product);
+                    Navigator.pushNamed(context, '/');
+                  },
                 ),
               ),
             ),
