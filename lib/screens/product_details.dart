@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:openfoodfacts/model/Product.dart';
-import '../constants.dart';
 
 class ProductDetails extends StatelessWidget {
   final myController = TextEditingController();
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,6 @@ class ProductDetails extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.network('${product.imgSmallUrl}'),
             SizedBox(
               height: 30,
             ),
@@ -48,14 +49,8 @@ class ProductDetails extends StatelessWidget {
             TextButton(
               child: Text('Add Food'),
               onPressed: () {
-                var servingSize = int.parse(myController.text);
 
-                foodList.add(product);
-                buildWidget(
-                    product.productName,
-                    product.nutriments.proteinsServing * servingSize,
-                    product.nutriments.carbohydratesServing * servingSize,
-                    product.nutriments.fatServing * servingSize);
+
                 Navigator.pushNamed(context, '/');
               },
             ),
