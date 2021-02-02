@@ -1,9 +1,10 @@
 import 'package:openfoodfacts/model/parameter/SearchTerms.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
+import 'package:my_fitness_tracker/constants.dart';
 
 Future<Product> getProduct(String barcode) async {
   ProductQueryConfiguration configurations = ProductQueryConfiguration(barcode,
-      language: OpenFoodFactsLanguage.ENGLISH, fields: [ProductField.ALL]);
+      language: OpenFoodFactsLanguage.ENGLISH, fields: productSearchFields);
 
   ProductResult result = await OpenFoodAPIClient.getProduct(configurations);
 
@@ -18,8 +19,8 @@ Future<dynamic> productSearchKeywords(List<String> keywords) async {
   var parameters = <Parameter>[
     SearchTerms(terms: keywords),
     const OutputFormat(format: Format.JSON),
-    const Page(page: 1),
-    const PageSize(size: 10),
+    const Page(page: 0),
+    const PageSize(size: 25),
     const SearchSimple(active: true),
     const SortBy(option: SortOption.POPULARITY),
   ];
@@ -27,7 +28,7 @@ Future<dynamic> productSearchKeywords(List<String> keywords) async {
   ProductSearchQueryConfiguration configuration =
       ProductSearchQueryConfiguration(
           parametersList: parameters,
-          fields: [ProductField.ALL],
+          fields: productSearchFields,
           language: OpenFoodFactsLanguage.ENGLISH);
 
   SearchResult result =
