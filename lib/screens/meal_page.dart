@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:my_fitness_tracker/classes/food_product.dart';
 import 'package:my_fitness_tracker/constants.dart';
-import 'package:my_fitness_tracker/services/open_food.dart';
-import '../services/barcode_scanner.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import '../services.dart';
 import '../constants.dart';

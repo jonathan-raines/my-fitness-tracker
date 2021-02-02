@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_fitness_tracker/services/open_food.dart';
+import 'package:my_fitness_tracker/services.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
 class SearchPage extends StatefulWidget {

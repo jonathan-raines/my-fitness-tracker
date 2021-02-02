@@ -4,7 +4,7 @@ import 'package:openfoodfacts/model/Product.dart';
 
 class ProductDetails extends StatelessWidget {
   final myController = TextEditingController();
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,6 @@ class ProductDetails extends StatelessWidget {
 
             // TODO Create drop down menu for grams or servings and calculate accordingly
             // TODO Create multiplier by taking number of grams divided by serving size
-            // TODO Edit the protein, carb, fat values in object with multiplier before adding to foodList
             SizedBox(
               height: 50,
               width: 100,

@@ -3,6 +3,21 @@ import 'package:openfoodfacts/model/parameter/TagFilter.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:my_fitness_tracker/constants.dart';
 
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter/services.dart';
+
+Future<String> scanBarcode() async {
+  String barcodeScanRes;
+
+  try {
+    barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+        '#ff6666', 'Cancel', false, ScanMode.BARCODE);
+  } on PlatformException {
+    barcodeScanRes = 'Failed to get platform version.';
+  }
+  return barcodeScanRes;
+}
+
 Future<Product> getProduct(String barcode) async {
   ProductQueryConfiguration configurations = ProductQueryConfiguration(barcode,
       language: OpenFoodFactsLanguage.ENGLISH, fields: productSearchFields);
