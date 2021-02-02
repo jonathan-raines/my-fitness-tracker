@@ -1,23 +1,11 @@
 import 'package:openfoodfacts/model/parameter/SearchTerms.dart';
+import 'package:openfoodfacts/model/parameter/TagFilter.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:flutter/services.dart';
-
-Future<String> scanBarcode() async {
-  String barcodeScanRes;
-
-  try {
-    barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        '#ff6666', 'Cancel', false, ScanMode.BARCODE);
-  } on PlatformException {
-    barcodeScanRes = 'Failed to get platform version.';
-  }
-  return barcodeScanRes;
-}
+import 'package:my_fitness_tracker/constants.dart';
 
 Future<Product> getProduct(String barcode) async {
   ProductQueryConfiguration configurations = ProductQueryConfiguration(barcode,
-      language: OpenFoodFactsLanguage.ENGLISH, fields: [ProductField.ALL]);
+      language: OpenFoodFactsLanguage.ENGLISH, fields: productSearchFields);
 
   ProductResult result = await OpenFoodAPIClient.getProduct(configurations);
 
@@ -32,16 +20,20 @@ Future<dynamic> productSearchKeywords(List<String> keywords) async {
   var parameters = <Parameter>[
     SearchTerms(terms: keywords),
     const OutputFormat(format: Format.JSON),
-    const Page(page: 1),
-    const PageSize(size: 10),
+    const Page(page: 0),
+    const PageSize(size: 25),
     const SearchSimple(active: true),
     const SortBy(option: SortOption.POPULARITY),
+    const TagFilter(
+        tagType: "countries",
+        contains: true,
+        tagName: "united states"),
   ];
 
   ProductSearchQueryConfiguration configuration =
       ProductSearchQueryConfiguration(
           parametersList: parameters,
-          fields: [ProductField.ALL],
+          fields: productSearchFields,
           language: OpenFoodFactsLanguage.ENGLISH);
 
   SearchResult result =

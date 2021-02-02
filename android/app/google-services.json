@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "570299309213",
+    "project_id": "nutriti-own",
+    "storage_bucket": "nutriti-own.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:570299309213:android:f8f1e2c3b6cba08d250874",
+        "android_client_info": {
+          "package_name": "com.rainejon.nutritiown"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "570299309213-79p19a2n35dujquc44iir15juc5csc2t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxPZckQ_pCCpj3okB5bpv-vUBCagumtg0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "570299309213-79p19a2n35dujquc44iir15juc5csc2t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

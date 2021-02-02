@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_fitness_tracker/services/open_food.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
-import '../services.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class _SearchPageState extends State<SearchPage> {
   final FocusNode focusNode = FocusNode();
   final myController = TextEditingController();
 
-  List<Widget> _buildProductList = [];
+  List<ListTile> foodResultsTiles = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,50 +38,29 @@ class _SearchPageState extends State<SearchPage> {
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () async {
-                focusNode.unfocus(); // hide keyboard upon starting search
+                focusNode.unfocus();
                 result = await productSearchKeywords([myController.text]);
-
-                setState(() {
-                  _buildProductList = [];
-                  for (Product product in result.products) {
-                    _buildProductList.add(
-                      GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/details',
-                            arguments: product),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'Name: ${product.productName}',
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                'Protein: ${product.nutriments.proteinsServing}',
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                'Carbs: ${product.nutriments.carbohydratesServing}',
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                'Fats: ${product.nutriments.fatServing}',
-                              ),
-                            ),
-                          ],
-                        ),
+                foodResultsTiles = [];
+                for (Product product in result.products) {
+                  if (product.productName != null && product.servingSize != null) {
+                    foodResultsTiles.add(
+                      ListTile(
+                        title: Text(product.productName ?? ''),
+                        trailing: Text('Serving Size: ${product.servingSize}'),
+                        onTap: () => Navigator.pushNamed(context, '/details', arguments: product),
                       ),
                     );
                   }
-                });
+                  setState(() {});
+                }
               },
               child: Text('Search'),
             ),
           ),
-          Column(
-            children: _buildProductList,
+          Expanded(
+              child: ListView(
+              children: foodResultsTiles,
+            ),
           ),
         ],
       ),
