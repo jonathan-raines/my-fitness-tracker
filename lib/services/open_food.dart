@@ -1,4 +1,5 @@
 import 'package:openfoodfacts/model/parameter/SearchTerms.dart';
+import 'package:openfoodfacts/model/parameter/TagFilter.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import 'package:my_fitness_tracker/constants.dart';
 
@@ -23,6 +24,10 @@ Future<dynamic> productSearchKeywords(List<String> keywords) async {
     const PageSize(size: 25),
     const SearchSimple(active: true),
     const SortBy(option: SortOption.POPULARITY),
+    const TagFilter(
+        tagType: "countries",
+        contains: true,
+        tagName: "united states"),
   ];
 
   ProductSearchQueryConfiguration configuration =
