@@ -56,3 +56,10 @@ Future<dynamic> productSearchKeywords(List<String> keywords) async {
 
   return result;
 }
+
+Map<String, dynamic> toMap(Product product) => {
+  'name': product.productName,
+  'protein': product.nutriments.proteinsServing,
+  'carbs': product.nutriments.carbohydratesServing,
+  'fats': product.nutriments.fatServing
+};
