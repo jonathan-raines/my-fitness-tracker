@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:my_fitness_tracker/constants.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import '../services.dart';
 import '../constants.dart';
 
-//final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+final FirebaseAuth _auth = FirebaseAuth.instance;
+var formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
 class Meals extends StatefulWidget {
   @override
@@ -13,22 +17,19 @@ class Meals extends StatefulWidget {
 }
 
 class _MealsState extends State<Meals> {
+  var docRef = _firestore
+      .collection('users')
+      .doc(_auth.currentUser.uid)
+      .collection('date')
+      .doc(formattedDate)
+      .collection('meals')
+      .snapshots();
+  // .doc(1.toString());
+
   double totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
 
-  double calculateCalories(Product product) {
-    return (product.nutriments.proteinsServing * 4) +
-        (product.nutriments.fatServing * 9) +
-        (product.nutriments.carbohydratesServing * 4);
-  }
-
-  void calculateTotals(List<Product> foodList) {
-    totalCalories = totalProtein = totalCarbs = totalFats = 0;
-    for (Product product in foodList) {
-      totalCalories += calculateCalories(product).toDouble();
-      totalProtein += product.nutriments.proteinsServing;
-      totalCarbs += product.nutriments.carbohydratesServing;
-      totalFats += product.nutriments.fatServing;
-    }
+  void calculateCalories() {
+    totalCalories = (totalProtein * 4) + (totalCarbs * 4) + (totalFats * 9);
   }
 
   @override
@@ -40,38 +41,68 @@ class _MealsState extends State<Meals> {
       ),
       body: Column(
         children: [
-          Column(
-            children: [],
-          ),
-          mealDivider,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Total Calories: $totalCalories'),
-                  Text('Total Protein: $totalProtein'),
-                  Text('Total Carbs: $totalCarbs'),
-                  Text('Total Fats: $totalFats'),
-                ],
-              ),
-              TextButton(
-                onPressed: () async {
-                  Navigator.pushNamed(context, '/search');
-                },
-                child: addFoodButton,
-              ),
-              TextButton(
-                onPressed: () async {
-                  Product product =
-                      await getProduct('038000138416'); //await scanBarcode());
+          StreamBuilder<QuerySnapshot>(
+            stream: docRef,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return CircularProgressIndicator();
+              }
+              final meals = snapshot.data.docs;
 
-                  Navigator.pushNamed(context, '/details', arguments: product);
-                },
-                child: scanBarcodeButton,
-              ),
-            ],
+              List<Widget> mealWidgets = [];
+              totalCalories = 0;
+              totalProtein = 0;
+              totalCarbs = 0;
+              totalFats = 0;
+
+              for (var meal in meals) {
+                for (var food in meal.data()['foods']) {
+                  mealWidgets.add(Text('${food['productName']}'));
+                  totalProtein += food['nutriments']['proteinsServing'];
+                  totalCarbs += food['nutriments']['carbohydratesServing'];
+                  totalFats += food['nutriments']['fatServing'];
+                }
+              }
+              mealWidgets.add(mealDivider);
+
+              calculateCalories();
+
+              mealWidgets.add(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Total Calories: $totalCalories'),
+                        Text('Total Protein: $totalProtein'),
+                        Text('Total Carbs: $totalCarbs'),
+                        Text('Total Fats: $totalFats'),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.pushNamed(context, '/search');
+                      },
+                      child: addFoodButton,
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        Product product = await getProduct(
+                            '038000138416'); //await scanBarcode());
+
+                        Navigator.pushNamed(context, '/details',
+                            arguments: product);
+                      },
+                      child: scanBarcodeButton,
+                    ),
+                  ],
+                ),
+              );
+              return Column(
+                children: mealWidgets,
+              );
+            },
           ),
         ],
       ),
