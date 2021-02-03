@@ -88,8 +88,7 @@ class _MealsState extends State<Meals> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        Product product = await getProduct(
-                            '038000138416'); //await scanBarcode());
+                        Product product = await getProduct(await scanBarcode());
 
                         Navigator.pushNamed(context, '/details',
                             arguments: product);
