@@ -5,8 +5,6 @@ import '../constants.dart';
 import '../components/rounded_button.dart';
 
 class LoginScreen extends StatefulWidget {
-  static String id = 'login_screen';
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
