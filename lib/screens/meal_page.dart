@@ -84,6 +84,10 @@ class _MealsState extends State<Meals> {
                         'foods': FieldValue.arrayRemove([food])
                       });
                     },
+                    onTap: () {
+                      Navigator.pushNamed(context, '/details',
+                          arguments: fromMap(food, food['nutriments']));
+                    },
                   ));
                   totalProtein += food['nutriments']['proteinsServing'].round();
                   totalCarbs +=
