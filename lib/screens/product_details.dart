@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_fitness_tracker/services.dart';
+import 'package:openfoodfacts/model/Nutriments.dart';
 import 'package:openfoodfacts/model/Product.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -13,10 +14,9 @@ class ProductDetails extends StatefulWidget {
 class _ProductDetailsState extends State<ProductDetails> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController _controller = TextEditingController();
   final formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-  int weight = 0;
+  int weight = 1;
   int selectedMealNumber = 1;
 
   DropdownButton<int> androidDropdown() {
@@ -77,7 +77,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                   child: TextField(
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(),
-                    controller: _controller,
+                    onChanged: (value) {
+                      weight = int.parse(value);
+                    },
                   ),
                 ),
                 SizedBox(
@@ -88,12 +90,23 @@ class _ProductDetailsState extends State<ProductDetails> {
                 TextButton(
                   child: Text('Add Food'),
                   onPressed: () {
-                    /* product.nutriments.proteinsServing *=
-                        int.parse(_controller.text);
-                    product.nutriments.carbohydratesServing *=
-                        int.parse(_controller.text);
-                    product.nutriments.fatServing *=
-                        int.parse(_controller.text); */
+                    if (weight > 1) {
+                      product.nutriments = Nutriments(
+                        proteinsServing:
+                            weight * product.nutriments.proteinsServing,
+                        fatServing: weight * product.nutriments.fatServing,
+                        carbohydratesServing:
+                            weight * product.nutriments.carbohydratesServing,
+                        saltServing: weight * product.nutriments.saltServing,
+                        saturatedFatServing:
+                            weight * product.nutriments.saturatedFatServing,
+                        sugarsServing:
+                            weight * product.nutriments.sugarsServing,
+                        sodiumServing:
+                            weight * product.nutriments.sodiumServing,
+                        fiberServing: weight * product.nutriments.fiberServing,
+                      );
+                    }
 
                     var docRef = _firestore
                         .collection('users')
