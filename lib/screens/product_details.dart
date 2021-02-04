@@ -11,19 +11,13 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
-  final myController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _controller = TextEditingController();
+  final formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-  var formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
+  int weight = 0;
   int selectedMealNumber = 1;
-
-  List<Widget> showProductDetails(Product product) {
-    List<Widget> productDetails = [];
-    toMap(product).forEach((k, v) => {productDetails.add(Text('$k: $v'))});
-    return productDetails;
-  }
 
   DropdownButton<int> androidDropdown() {
     List<DropdownMenuItem<int>> dropdownItems = [];
@@ -49,60 +43,81 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     final Product product = ModalRoute.of(context).settings.arguments;
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Product Details'),
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
-              children: showProductDetails(product),
-            ),
-            TextField(
-              keyboardType: TextInputType.number,
-              controller: myController,
-              decoration: InputDecoration(
-                hintText: 'Servings: ',
-                border: OutlineInputBorder(),
+            Container(
+              height: 150,
+              child: ListView(
+                children: [
+                  Text('Name: ${product.productName}'),
+                  Text('Serving Size: ${product.servingSize}'),
+                  Text(
+                      'Protein per Serving: ${product.nutriments.proteinsServing.round()}'),
+                  Text(
+                      'Carbohydrates per Serving: ${product.nutriments.carbohydratesServing.round()}'),
+                  Text(
+                      'Fats per Serving: ${product.nutriments.fatServing.round()}'),
+                  Text(
+                      'Saturated Fats per Serving: ${product.nutriments.saturatedFatServing.round()}'),
+                  Text(
+                      'Salt per Serving: ${product.nutriments.saltServing.round()}'),
+                ],
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Container(
+                  width: 100,
+                  height: 50,
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(),
+                    controller: _controller,
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
                 Text('Meal Number: '),
                 androidDropdown(),
-              ],
-            ),
-            TextButton(
-              child: Text('Add Food'),
-              onPressed: () {
-                var docRef = _firestore
-                    .collection('users')
-                    .doc(_auth.currentUser.uid)
-                    .collection('date')
-                    .doc(formattedDate)
-                    .collection('meals')
-                    .doc(selectedMealNumber.toString());
+                TextButton(
+                  child: Text('Add Food'),
+                  onPressed: () {
+                    /* product.nutriments.proteinsServing *=
+                        int.parse(_controller.text);
+                    product.nutriments.carbohydratesServing *=
+                        int.parse(_controller.text);
+                    product.nutriments.fatServing *=
+                        int.parse(_controller.text); */
 
-                docRef.get().then((doc) => {
-                      if (doc.exists)
-                        {
-                          docRef.update({
-                            'foods': FieldValue.arrayUnion([toMap(product)])
-                          })
-                        }
-                      else
-                        {
-                          docRef.set({
-                            'foods': [toMap(product)]
-                          })
-                        }
-                    });
-                Navigator.pushNamed(context, '/diary');
-              },
+                    var docRef = _firestore
+                        .collection('users')
+                        .doc(_auth.currentUser.uid)
+                        .collection('date')
+                        .doc(formattedDate)
+                        .collection('meals')
+                        .doc('Meal $selectedMealNumber');
+
+                    docRef.get().then((doc) => {
+                          doc.exists
+                              ? docRef.update({
+                                  'foods':
+                                      FieldValue.arrayUnion([toMap(product)])
+                                })
+                              : docRef.set({
+                                  'foods': [toMap(product)]
+                                })
+                        });
+                    Navigator.pushNamed(context, '/diary');
+                  },
+                ),
+              ],
             ),
           ],
         ),

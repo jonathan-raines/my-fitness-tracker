@@ -17,6 +17,21 @@ class Meals extends StatefulWidget {
 }
 
 class _MealsState extends State<Meals> {
+  @override
+  void initState() {
+    super.initState();
+    // Create Empty Meal Documents inside the Date collection
+    for (var i = 1; i <= numberOfMeals; i++) {
+      docRef.doc('Meal $i').get().then((doc) => {
+            !doc.exists
+                ? docRef.doc('Meal $i').set({'foods': []})
+                : docRef
+                    .doc('Meal $i')
+                    .update({'foods': FieldValue.arrayUnion([])})
+          });
+    }
+  }
+
   var docRef = _firestore
       .collection('users')
       .doc(_auth.currentUser.uid)
@@ -56,7 +71,7 @@ class _MealsState extends State<Meals> {
               totalFats = 0;
 
               for (var meal in meals) {
-                mealWidgets.add(Text('Meal ${meal.id}'));
+                mealWidgets.add(Text('${meal.id}'));
                 for (var food in meal.data()['foods']) {
                   mealWidgets.add(ListTile(
                     title: Text('${food['productName']}'),
