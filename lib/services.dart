@@ -1,4 +1,3 @@
-import 'package:openfoodfacts/model/Nutriments.dart';
 import 'package:openfoodfacts/model/Product.dart';
 import 'package:openfoodfacts/model/parameter/SearchTerms.dart';
 import 'package:openfoodfacts/model/parameter/TagFilter.dart';

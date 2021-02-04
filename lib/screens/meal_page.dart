@@ -22,18 +22,18 @@ class _MealsState extends State<Meals> {
       .doc(_auth.currentUser.uid)
       .collection('date')
       .doc(formattedDate)
-      .collection('meals')
-      .snapshots();
-  // .doc(1.toString());
+      .collection('meals');
 
-  double totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
+  int totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
 
-  void calculateCalories() {
-    totalCalories = (totalProtein * 4) + (totalCarbs * 4) + (totalFats * 9);
-  }
+  int calculateCalories() =>
+      (totalProtein.round() * 4) +
+      (totalCarbs.round() * 4) +
+      (totalFats.round() * 9);
 
   @override
   Widget build(BuildContext context) {
+    calculateCalories();
     return Scaffold(
       appBar: AppBar(
         title: Text('My Diary'),
@@ -42,7 +42,7 @@ class _MealsState extends State<Meals> {
       body: Column(
         children: [
           StreamBuilder<QuerySnapshot>(
-            stream: docRef,
+            stream: docRef.snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return CircularProgressIndicator();
@@ -56,53 +56,56 @@ class _MealsState extends State<Meals> {
               totalFats = 0;
 
               for (var meal in meals) {
+                mealWidgets.add(Text('Meal ${meal.id}'));
                 for (var food in meal.data()['foods']) {
-                  mealWidgets.add(Text('${food['productName']}'));
-                  totalProtein += food['nutriments']['proteinsServing'];
-                  totalCarbs += food['nutriments']['carbohydratesServing'];
-                  totalFats += food['nutriments']['fatServing'];
+                  mealWidgets.add(ListTile(
+                    title: Text('${food['productName']}'),
+                    subtitle: Text(
+                      'Protein: ${food['nutriments']['proteinsServing'].toInt()} Carbohydrates: ${food['nutriments']['carbohydratesServing'].toInt()} Fats: ${food['nutriments']['fatServing'].toInt()}',
+                      textAlign: TextAlign.start,
+                    ),
+                    onLongPress: () {
+                      docRef.doc(meal.id).update({
+                        'foods': FieldValue.arrayRemove([food])
+                      });
+                    },
+                  ));
+                  totalProtein += food['nutriments']['proteinsServing'].round();
+                  totalCarbs +=
+                      food['nutriments']['carbohydratesServing'].round();
+                  totalFats += food['nutriments']['fatServing'].round();
                 }
               }
-              mealWidgets.add(mealDivider);
-
-              calculateCalories();
-
-              mealWidgets.add(
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Total Calories: $totalCalories'),
-                        Text('Total Protein: $totalProtein'),
-                        Text('Total Carbs: $totalCarbs'),
-                        Text('Total Fats: $totalFats'),
-                      ],
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        Navigator.pushNamed(context, '/search');
-                      },
-                      child: addFoodButton,
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        Product product = await getProduct(await scanBarcode());
-
-                        Navigator.pushNamed(context, '/details',
-                            arguments: product);
-                      },
-                      child: scanBarcodeButton,
-                    ),
-                  ],
-                ),
-              );
+              totalCalories = calculateCalories();
+              mealWidgets.add(ListTile(
+                title: Text('Totals: '),
+                subtitle: Text(
+                    'Calories: $totalCalories, Protein: $totalProtein, Carbohydrates: $totalCarbs, Fats: $totalFats'),
+              ));
               return Column(
                 children: mealWidgets,
               );
             },
           ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: () async {
+                  Navigator.pushNamed(context, '/search');
+                },
+                child: addFoodButton,
+              ),
+              TextButton(
+                onPressed: () async {
+                  Product product = await getProduct(await scanBarcode());
+
+                  Navigator.pushNamed(context, '/details', arguments: product);
+                },
+                child: scanBarcodeButton,
+              ),
+            ],
+          )
         ],
       ),
     );
