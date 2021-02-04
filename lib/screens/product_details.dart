@@ -19,6 +19,12 @@ class _ProductDetailsState extends State<ProductDetails> {
 
   int selectedMealNumber = 1;
 
+  List<Widget> showProductDetails(Product product) {
+    List<Widget> productDetails = [];
+    toMap(product).forEach((k, v) => {productDetails.add(Text('$k: $v'))});
+    return productDetails;
+  }
+
   DropdownButton<int> androidDropdown() {
     List<DropdownMenuItem<int>> dropdownItems = [];
     for (var i = 1; i < 6; i++) {
@@ -52,16 +58,8 @@ class _ProductDetailsState extends State<ProductDetails> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 30,
-            ),
-            Text('Product Name: ${product.productName}'),
-            Text('Serving Size: ${product.servingSize}'),
-            Text('Protein: ${product.nutriments.proteinsServing}'),
-            Text('Carbs: ${product.nutriments.carbohydratesServing}'),
-            Text('Fats: ${product.nutriments.fatServing}'),
-            SizedBox(
-              height: 30,
+            Column(
+              children: showProductDetails(product),
             ),
             TextField(
               keyboardType: TextInputType.number,
