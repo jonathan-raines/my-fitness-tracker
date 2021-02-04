@@ -42,9 +42,12 @@ class _MealsState extends State<Meals> {
   int totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
 
   int calculateCalories() =>
-      (totalProtein.round() * 4) +
-      (totalCarbs.round() * 4) +
-      (totalFats.round() * 9);
+      (((totalProtein.round() * 4) +
+                  (totalCarbs.round() * 4) +
+                  (totalFats.round() * 9)) /
+              10.0)
+          .round() *
+      10;
 
   @override
   Widget build(BuildContext context) {
