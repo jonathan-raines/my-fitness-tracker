@@ -105,12 +105,13 @@ Map<String, dynamic> toMap(Product product) => {
 Product fromMap(
         Map<String, dynamic> productMap, Map<String, dynamic> nutrimentMap) =>
     Product(
-        barcode: productMap['barcode'],
-        brands: productMap['brands'],
-        productName: productMap['productName'],
-        servingQuantity: productMap['servingQuantity'],
-        servingSize: productMap['servingSize'],
-        nutriments: nutrimentsFromMap(nutrimentMap));
+      barcode: productMap['barcode'],
+      brands: productMap['brands'],
+      productName: productMap['productName'],
+      servingQuantity: productMap['servingQuantity'],
+      servingSize: productMap['servingSize'],
+      nutriments: nutrimentsFromMap(nutrimentMap),
+    );
 
 Nutriments nutrimentsFromMap(Map<String, dynamic> map) => Nutriments(
       salt: map['salt'],
