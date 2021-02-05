@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         email: email, password: password);
 
                 if (userCredential != null) {
-                  Navigator.pushNamed(context, '/diary');
+                  Navigator.pushReplacementNamed(context, '/diary');
                 }
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
