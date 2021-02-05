@@ -43,29 +43,184 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     final Product product = ModalRoute.of(context).settings.arguments;
+    int calories = (((product.nutriments.proteinsServing * 4) +
+                    (product.nutriments.carbohydratesServing * 4) +
+                    (product.nutriments.fatServing * 9)) /
+                10.0)
+            .round() *
+        10;
     return Scaffold(
       appBar: AppBar(
         title: Text('Product Details'),
+        backgroundColor: Colors.teal.shade600,
       ),
       body: Center(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Container(
-              height: 150,
-              child: ListView(
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text('Name: ${product.productName}'),
-                  Text('Serving Size: ${product.servingSize}'),
-                  Text(
-                      'Protein per Serving: ${product.nutriments.proteinsServing}'),
-                  Text(
-                      'Carbohydrates per Serving: ${product.nutriments.carbohydratesServing}'),
-                  Text('Fats per Serving: ${product.nutriments.fatServing}'),
-                  Text(
-                      'Saturated Fats per Serving: ${product.nutriments.saturatedFatServing}'),
-                  Text('Salt per Serving: ${product.nutriments.saltServing}'),
+                  Expanded(
+                    child: Text(
+                      'Name: ',
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      product.productName,
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Serving Size: ',
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      product.servingSize,
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Calories: ',
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '$calories',
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Protein: ',
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${product.nutriments.proteinsServing.round()} g',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontFamily: 'Lato',
+                      ),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Carbohydrates: ',
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${product.nutriments.carbohydratesServing.round()} g',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontFamily: 'Lato',
+                      ),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Fats: ',
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${product.nutriments.fatServing.round()} g',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontFamily: 'Lato',
+                      ),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Sugars: ',
+                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${product.nutriments.sugarsServing.round()} g',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontFamily: 'Lato',
+                      ),
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(
+              height: 5,
+              thickness: 3.0,
+              color: Colors.black38,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

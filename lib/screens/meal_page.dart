@@ -87,6 +87,7 @@ class _MealsState extends State<Meals> {
       appBar: AppBar(
         title: Text('My Diary'),
         centerTitle: true,
+        backgroundColor: Colors.teal.shade600,
       ),
       body: Column(
         children: [
