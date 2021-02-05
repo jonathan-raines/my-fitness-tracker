@@ -20,7 +20,7 @@ const scanBarcodeButton = Icon(
 );
 
 const textFieldDecoration = InputDecoration(
-  hintText: 'Enter a valuew',
+  hintText: 'Enter a value',
   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
   border: OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
@@ -41,3 +41,7 @@ const productSearchFields = [
   ProductField.SERVING_SIZE,
   ProductField.NUTRIMENTS,
 ];
+
+const int numberOfMeals = 5;
+
+enum FoodContextOptions { edit, delete }

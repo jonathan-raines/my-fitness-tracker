@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_fitness_tracker/services.dart';
+import 'package:openfoodfacts/model/Nutriments.dart';
 import 'package:openfoodfacts/model/Product.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -11,19 +12,12 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
-  final myController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-  var formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
+  int weight = 1;
   int selectedMealNumber = 1;
-
-  List<Widget> showProductDetails(Product product) {
-    List<Widget> productDetails = [];
-    toMap(product).forEach((k, v) => {productDetails.add(Text('$k: $v'))});
-    return productDetails;
-  }
 
   DropdownButton<int> androidDropdown() {
     List<DropdownMenuItem<int>> dropdownItems = [];
@@ -49,60 +43,92 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     final Product product = ModalRoute.of(context).settings.arguments;
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Product Details'),
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
-              children: showProductDetails(product),
-            ),
-            TextField(
-              keyboardType: TextInputType.number,
-              controller: myController,
-              decoration: InputDecoration(
-                hintText: 'Servings: ',
-                border: OutlineInputBorder(),
+            Container(
+              height: 150,
+              child: ListView(
+                children: [
+                  Text('Name: ${product.productName}'),
+                  Text('Serving Size: ${product.servingSize}'),
+                  Text(
+                      'Protein per Serving: ${product.nutriments.proteinsServing}'),
+                  Text(
+                      'Carbohydrates per Serving: ${product.nutriments.carbohydratesServing}'),
+                  Text('Fats per Serving: ${product.nutriments.fatServing}'),
+                  Text(
+                      'Saturated Fats per Serving: ${product.nutriments.saturatedFatServing}'),
+                  Text('Salt per Serving: ${product.nutriments.saltServing}'),
+                ],
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Container(
+                  width: 100,
+                  height: 50,
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(),
+                    onChanged: (value) {
+                      weight = int.parse(value);
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 50,
+                ),
                 Text('Meal Number: '),
                 androidDropdown(),
-              ],
-            ),
-            TextButton(
-              child: Text('Add Food'),
-              onPressed: () {
-                var docRef = _firestore
-                    .collection('users')
-                    .doc(_auth.currentUser.uid)
-                    .collection('date')
-                    .doc(formattedDate)
-                    .collection('meals')
-                    .doc(selectedMealNumber.toString());
+                TextButton(
+                  child: Text('Add Food'),
+                  onPressed: () {
+                    if (weight > 1) {
+                      product.nutriments = Nutriments(
+                        proteinsServing:
+                            weight * product.nutriments.proteinsServing,
+                        fatServing: weight * product.nutriments.fatServing,
+                        carbohydratesServing:
+                            weight * product.nutriments.carbohydratesServing,
+                        saltServing: weight * product.nutriments.saltServing,
+                        saturatedFatServing:
+                            weight * product.nutriments.saturatedFatServing,
+                        sugarsServing:
+                            weight * product.nutriments.sugarsServing,
+                        sodiumServing:
+                            weight * product.nutriments.sodiumServing,
+                        fiberServing: weight * product.nutriments.fiberServing,
+                      );
+                    }
 
-                docRef.get().then((doc) => {
-                      if (doc.exists)
-                        {
-                          docRef.update({
-                            'foods': FieldValue.arrayUnion([toMap(product)])
-                          })
-                        }
-                      else
-                        {
-                          docRef.set({
-                            'foods': [toMap(product)]
-                          })
-                        }
-                    });
-                Navigator.pushNamed(context, '/diary');
-              },
+                    var docRef = _firestore
+                        .collection('users')
+                        .doc(_auth.currentUser.uid)
+                        .collection('date')
+                        .doc(formattedDate)
+                        .collection('meals')
+                        .doc('Meal $selectedMealNumber');
+
+                    docRef.get().then((doc) => {
+                          doc.exists
+                              ? docRef.update({
+                                  'foods':
+                                      FieldValue.arrayUnion([toMap(product)])
+                                })
+                              : docRef.set({
+                                  'foods': [toMap(product)]
+                                })
+                        });
+                    Navigator.pushNamed(context, '/diary');
+                  },
+                ),
+              ],
             ),
           ],
         ),
