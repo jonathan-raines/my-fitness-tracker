@@ -43,3 +43,5 @@ const productSearchFields = [
 ];
 
 const int numberOfMeals = 5;
+
+enum FoodContextOptions { edit, delete }

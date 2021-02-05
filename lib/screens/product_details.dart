@@ -62,9 +62,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                       'Carbohydrates per Serving: ${product.nutriments.carbohydratesServing}'),
                   Text('Fats per Serving: ${product.nutriments.fatServing}'),
                   Text(
-                      'Saturated Fats per Serving: ${product.nutriments.saturatedFatServing.round()}'),
-                  Text(
-                      'Salt per Serving: ${product.nutriments.saltServing.round()}'),
+                      'Saturated Fats per Serving: ${product.nutriments.saturatedFatServing}'),
+                  Text('Salt per Serving: ${product.nutriments.saltServing}'),
                 ],
               ),
             ),

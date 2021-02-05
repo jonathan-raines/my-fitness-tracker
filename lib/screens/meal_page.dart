@@ -17,6 +17,13 @@ class Meals extends StatefulWidget {
 }
 
 class _MealsState extends State<Meals> {
+  var docRef = _firestore
+      .collection('users')
+      .doc(_auth.currentUser.uid)
+      .collection('date')
+      .doc(formattedDate)
+      .collection('meals');
+
   @override
   void initState() {
     super.initState();
@@ -32,22 +39,46 @@ class _MealsState extends State<Meals> {
     }
   }
 
-  var docRef = _firestore
-      .collection('users')
-      .doc(_auth.currentUser.uid)
-      .collection('date')
-      .doc(formattedDate)
-      .collection('meals');
+  double totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
 
-  int totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
-
-  int calculateCalories() =>
-      (((totalProtein.round() * 4) +
-                  (totalCarbs.round() * 4) +
-                  (totalFats.round() * 9)) /
-              10.0)
-          .round() *
+  double calculateCalories() =>
+      (((totalProtein * 4) + (totalCarbs * 4) + (totalFats * 9)) / 10.0)
+          .roundToDouble() *
       10;
+
+  Future<void> _askedToLead(QueryDocumentSnapshot meal, dynamic food) async {
+    switch (await showDialog<FoodContextOptions>(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            //title: const Text('Select assignment'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, FoodContextOptions.edit);
+                },
+                child: const Text('Edit'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context, FoodContextOptions.delete);
+                },
+                child: const Text('Delete'),
+              ),
+            ],
+          );
+        })) {
+      case FoodContextOptions.edit:
+        Navigator.pushNamed(context, '/details',
+            arguments: fromMap(food, food['nutriments']));
+        break;
+      case FoodContextOptions.delete:
+        docRef.doc(meal.id).update({
+          'foods': FieldValue.arrayRemove([food])
+        });
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,19 +114,17 @@ class _MealsState extends State<Meals> {
                       textAlign: TextAlign.start,
                     ),
                     onLongPress: () {
-                      docRef.doc(meal.id).update({
-                        'foods': FieldValue.arrayRemove([food])
-                      });
+                      _askedToLead(meal, food);
+                      /*  */
                     },
                     onTap: () {
                       Navigator.pushNamed(context, '/details',
                           arguments: fromMap(food, food['nutriments']));
                     },
                   ));
-                  totalProtein += food['nutriments']['proteinsServing'].round();
-                  totalCarbs +=
-                      food['nutriments']['carbohydratesServing'].round();
-                  totalFats += food['nutriments']['fatServing'].round();
+                  totalProtein += food['nutriments']['proteinsServing'];
+                  totalCarbs += food['nutriments']['carbohydratesServing'];
+                  totalFats += food['nutriments']['fatServing'];
                 }
               }
               totalCalories = calculateCalories();
