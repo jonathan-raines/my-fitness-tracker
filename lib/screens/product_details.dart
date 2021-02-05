@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_fitness_tracker/services.dart';
-import 'package:openfoodfacts/model/Nutriments.dart';
 import 'package:openfoodfacts/model/Product.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -44,11 +43,11 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     final Product product = ModalRoute.of(context).settings.arguments;
-    int calories = (((product.nutriments.proteinsServing * 4) +
+    double calories = (((product.nutriments.proteinsServing * 4) +
                     (product.nutriments.carbohydratesServing * 4) +
                     (product.nutriments.fatServing * 9)) /
                 10.0)
-            .round() *
+            .roundToDouble() *
         10;
     return Scaffold(
       appBar: AppBar(
@@ -94,7 +93,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       child: Container(
                         padding: EdgeInsets.only(right: 60),
                         child: TextField(
-                          textAlignVertical: TextAlignVertical.bottom,
+                          textAlignVertical: TextAlignVertical.center,
                           textAlign: TextAlign.center,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
@@ -147,15 +146,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                               doc.exists
                                   ? docRef.update({
                                       'foods': FieldValue.arrayUnion(
-                                          [toMap(product)]),
-                                      'servings': weight
+                                          [toMap(product, weight)]),
                                     })
                                   : docRef.set({
-                                      'foods': [toMap(product)],
-                                      'servings': weight
+                                      'foods': [toMap(product, weight)],
                                     })
                             });
-                        Navigator.pushNamed(context, '/diary');
+                        Navigator.popUntil(
+                            context, (ModalRoute.withName('/diary')));
                       },
                     ),
                   ),
