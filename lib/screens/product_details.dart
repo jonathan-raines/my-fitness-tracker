@@ -51,30 +51,54 @@ class _ProductDetailsState extends State<ProductDetails> {
         10;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Details'),
+        title: Text('Food Details'),
         backgroundColor: Colors.teal.shade600,
+        centerTitle: true,
       ),
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
+            productDetailsWidget(product.productName, 'Name'),
+            productDetailsWidget(product.servingSize, 'Serving Size'),
+            productDetailsWidget(calories.toString(), 'Calories'),
+            productDetailsWidget(
+                '${product.nutriments.proteinsServing.round().toString()} g',
+                'Protein'),
+            productDetailsWidget(
+                '${product.nutriments.carbohydratesServing.round().toString()} g',
+                'Carbohydrates'),
+            productDetailsWidget(
+                '${product.nutriments.fatServing.round().toString()} g',
+                'Fats'),
+            productDetailsWidget(
+                '${product.nutriments.sugarsServing.round().toString()} g',
+                'Sugars'),
+            productDetailsDivider(),
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
+                  Container(
+                    height: 50,
+                    width: 150,
                     child: Text(
-                      'Name: ',
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+                      'How many grams?',
                     ),
+                    alignment: Alignment.bottomCenter,
                   ),
-                  Expanded(
-                    child: Text(
-                      product.productName,
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
-                      textAlign: TextAlign.end,
+                  Container(
+                    height: 50,
+                    width: 100,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(),
+                      onChanged: (value) {
+                        weight = int.parse(value);
+                      },
                     ),
+                    alignment: Alignment.bottomCenter,
                   ),
                 ],
               ),
@@ -82,211 +106,102 @@ class _ProductDetailsState extends State<ProductDetails> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: Text(
-                      'Serving Size: ',
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      product.servingSize,
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
+                  Text('Meal Number: '),
+                  androidDropdown(),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Calories: ',
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+            Center(
+              child: Container(
+                width: 300,
+                height: 50,
+                child: Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.teal.shade600,
                     ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '$calories',
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Protein: ',
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '${product.nutriments.proteinsServing.round()} g',
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontFamily: 'Lato',
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Carbohydrates: ',
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '${product.nutriments.carbohydratesServing.round()} g',
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontFamily: 'Lato',
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Fats: ',
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '${product.nutriments.fatServing.round()} g',
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontFamily: 'Lato',
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Sugars: ',
-                      style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '${product.nutriments.sugarsServing.round()} g',
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontFamily: 'Lato',
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              height: 5,
-              thickness: 3.0,
-              color: Colors.black38,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 100,
-                  height: 50,
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(),
-                    onChanged: (value) {
-                      weight = int.parse(value);
+                    child: Text('Add Food'),
+                    onPressed: () {
+                      if (weight > 1) {
+                        product.nutriments = Nutriments(
+                          proteinsServing:
+                              weight * product.nutriments.proteinsServing,
+                          fatServing: weight * product.nutriments.fatServing,
+                          carbohydratesServing:
+                              weight * product.nutriments.carbohydratesServing,
+                          saltServing: weight * product.nutriments.saltServing,
+                          saturatedFatServing:
+                              weight * product.nutriments.saturatedFatServing,
+                          sugarsServing:
+                              weight * product.nutriments.sugarsServing,
+                          sodiumServing:
+                              weight * product.nutriments.sodiumServing,
+                          fiberServing:
+                              weight * product.nutriments.fiberServing,
+                        );
+                      }
+
+                      var docRef = _firestore
+                          .collection('users')
+                          .doc(_auth.currentUser.uid)
+                          .collection('date')
+                          .doc(formattedDate)
+                          .collection('meals')
+                          .doc('Meal $selectedMealNumber');
+
+                      docRef.get().then((doc) => {
+                            doc.exists
+                                ? docRef.update({
+                                    'foods':
+                                        FieldValue.arrayUnion([toMap(product)])
+                                  })
+                                : docRef.set({
+                                    'foods': [toMap(product)]
+                                  })
+                          });
+                      Navigator.pushNamed(context, '/diary');
                     },
                   ),
                 ),
-                SizedBox(
-                  width: 50,
-                ),
-                Text('Meal Number: '),
-                androidDropdown(),
-                TextButton(
-                  child: Text('Add Food'),
-                  onPressed: () {
-                    if (weight > 1) {
-                      product.nutriments = Nutriments(
-                        proteinsServing:
-                            weight * product.nutriments.proteinsServing,
-                        fatServing: weight * product.nutriments.fatServing,
-                        carbohydratesServing:
-                            weight * product.nutriments.carbohydratesServing,
-                        saltServing: weight * product.nutriments.saltServing,
-                        saturatedFatServing:
-                            weight * product.nutriments.saturatedFatServing,
-                        sugarsServing:
-                            weight * product.nutriments.sugarsServing,
-                        sodiumServing:
-                            weight * product.nutriments.sodiumServing,
-                        fiberServing: weight * product.nutriments.fiberServing,
-                      );
-                    }
-
-                    var docRef = _firestore
-                        .collection('users')
-                        .doc(_auth.currentUser.uid)
-                        .collection('date')
-                        .doc(formattedDate)
-                        .collection('meals')
-                        .doc('Meal $selectedMealNumber');
-
-                    docRef.get().then((doc) => {
-                          doc.exists
-                              ? docRef.update({
-                                  'foods':
-                                      FieldValue.arrayUnion([toMap(product)])
-                                })
-                              : docRef.set({
-                                  'foods': [toMap(product)]
-                                })
-                        });
-                    Navigator.pushNamed(context, '/diary');
-                  },
-                ),
-              ],
+              ),
             ),
+            productDetailsDivider(),
           ],
         ),
+      ),
+    );
+  }
+
+  Divider productDetailsDivider() {
+    return Divider(
+      height: 5,
+      thickness: 3.0,
+      color: Colors.black38,
+    );
+  }
+
+  Padding productDetailsWidget(String info, String title) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: Text(
+              '$title: ',
+              style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              info,
+              style: TextStyle(fontSize: 24.0, fontFamily: 'Lato'),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
       ),
     );
   }
