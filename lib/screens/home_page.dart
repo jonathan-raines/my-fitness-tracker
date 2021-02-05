@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../components/rounded_button.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -20,14 +21,14 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Colors.lightBlue,
             title: 'Log In',
             onPressed: () {
-              Navigator.pushNamed(context, '/login');
+              Navigator.pushReplacementNamed(context, '/login');
             },
           ),
           RoundedButton(
             color: Colors.lightBlue,
             title: 'Register',
             onPressed: () {
-              Navigator.pushNamed(context, '/register');
+              Navigator.pushReplacementNamed(context, '/register');
             },
           ),
         ],
