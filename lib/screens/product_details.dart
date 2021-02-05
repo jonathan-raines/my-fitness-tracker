@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_fitness_tracker/services.dart';
@@ -55,105 +56,114 @@ class _ProductDetailsState extends State<ProductDetails> {
         backgroundColor: Colors.teal.shade600,
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            productDetailsWidget(product.productName, 'Name'),
-            productDetailsWidget(product.servingSize, 'Serving Size'),
-            productDetailsWidget(calories.toString(), 'Calories'),
-            productDetailsWidget(
-                '${product.nutriments.proteinsServing.round().toString()} g',
-                'Protein'),
-            productDetailsWidget(
-                '${product.nutriments.carbohydratesServing.round().toString()} g',
-                'Carbohydrates'),
-            productDetailsWidget(
-                '${product.nutriments.fatServing.round().toString()} g',
-                'Fats'),
-            productDetailsWidget(
-                '${product.nutriments.sugarsServing.round().toString()} g',
-                'Sugars'),
-            productDetailsDivider(),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 50,
-                    width: 150,
-                    child: Text(
-                      'How many grams?',
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              productDetailsWidget(product.productName, 'Name'),
+              productDetailsWidget(product.servingSize, 'Serving Size'),
+              productDetailsWidget(calories.toString(), 'Calories'),
+              productDetailsWidget(
+                  '${product.nutriments.proteinsServing.round().toString()} g',
+                  'Protein'),
+              productDetailsWidget(
+                  '${product.nutriments.carbohydratesServing.round().toString()} g',
+                  'Carbohydrates'),
+              productDetailsWidget(
+                  '${product.nutriments.fatServing.round().toString()} g',
+                  'Fats'),
+              productDetailsWidget(
+                  '${product.nutriments.sugarsServing.round().toString()} g',
+                  'Sugars'),
+              productDetailsDivider(),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'Number of Servings',
+                        style: TextStyle(fontFamily: 'Lato', fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    alignment: Alignment.bottomCenter,
-                  ),
-                  Container(
-                    height: 50,
-                    width: 100,
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(),
-                      onChanged: (value) {
-                        weight = int.parse(value);
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(right: 60),
+                        child: TextField(
+                          textAlignVertical: TextAlignVertical.bottom,
+                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.only(bottom: 12)),
+                          onChanged: (value) {
+                            weight = int.parse(value);
+                          },
+                        ),
+                        alignment: Alignment.topLeft,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Add to Meal',
+                        style: TextStyle(fontFamily: 'Lato', fontSize: 18),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.topCenter,
+                        child: androidDropdown(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Center(
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 12),
+                  width: 300,
+                  height: 50,
+                  child: Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.teal.shade600,
+                      ),
+                      child: Text('Add Food'),
+                      onPressed: () {
+                        DocumentReference docRef = getMealReference();
+                        docRef.get().then((doc) => {
+                              doc.exists
+                                  ? docRef.update({
+                                      'foods': FieldValue.arrayUnion(
+                                          [toMap(product)]),
+                                      'servings': weight
+                                    })
+                                  : docRef.set({
+                                      'foods': [toMap(product)],
+                                      'servings': weight
+                                    })
+                            });
+                        Navigator.pushNamed(context, '/diary');
                       },
                     ),
-                    alignment: Alignment.bottomCenter,
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                      child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Text('Add to Meal?'))),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.topCenter,
-                      child: androidDropdown(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Center(
-              child: Container(
-                padding: EdgeInsets.only(bottom: 12),
-                width: 300,
-                height: 50,
-                child: Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.teal.shade600,
-                    ),
-                    child: Text('Add Food'),
-                    onPressed: () {
-                      DocumentReference docRef = getMealReference();
-                      docRef.get().then((doc) => {
-                            doc.exists
-                                ? docRef.update({
-                                    'foods':
-                                        FieldValue.arrayUnion([toMap(product)]),
-                                    'servings': weight
-                                  })
-                                : docRef.set({
-                                    'foods': [toMap(product)],
-                                    'servings': weight
-                                  })
-                          });
-                      Navigator.pushNamed(context, '/diary');
-                    },
                   ),
                 ),
               ),
-            ),
-            productDetailsDivider(),
-          ],
+              productDetailsDivider(),
+            ],
+          ),
         ),
       ),
     );
