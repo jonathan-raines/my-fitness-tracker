@@ -23,7 +23,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     List<DropdownMenuItem<int>> dropdownItems = [];
     for (var i = 1; i < 6; i++) {
       var newItem = DropdownMenuItem(
-        child: Text('$i'),
+        child: Text('Meal $i'),
         value: i,
       );
       dropdownItems.add(newItem);
@@ -108,13 +108,22 @@ class _ProductDetailsState extends State<ProductDetails> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Meal Number: '),
-                  androidDropdown(),
+                  Expanded(
+                      child: Container(
+                          alignment: Alignment.centerRight,
+                          child: Text('Add to Meal?'))),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      child: androidDropdown(),
+                    ),
+                  ),
                 ],
               ),
             ),
             Center(
               child: Container(
+                padding: EdgeInsets.only(bottom: 12),
                 width: 300,
                 height: 50,
                 child: Expanded(
@@ -124,41 +133,17 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                     child: Text('Add Food'),
                     onPressed: () {
-                      if (weight > 1) {
-                        product.nutriments = Nutriments(
-                          proteinsServing:
-                              weight * product.nutriments.proteinsServing,
-                          fatServing: weight * product.nutriments.fatServing,
-                          carbohydratesServing:
-                              weight * product.nutriments.carbohydratesServing,
-                          saltServing: weight * product.nutriments.saltServing,
-                          saturatedFatServing:
-                              weight * product.nutriments.saturatedFatServing,
-                          sugarsServing:
-                              weight * product.nutriments.sugarsServing,
-                          sodiumServing:
-                              weight * product.nutriments.sodiumServing,
-                          fiberServing:
-                              weight * product.nutriments.fiberServing,
-                        );
-                      }
-
-                      var docRef = _firestore
-                          .collection('users')
-                          .doc(_auth.currentUser.uid)
-                          .collection('date')
-                          .doc(formattedDate)
-                          .collection('meals')
-                          .doc('Meal $selectedMealNumber');
-
+                      DocumentReference docRef = getMealReference();
                       docRef.get().then((doc) => {
                             doc.exists
                                 ? docRef.update({
                                     'foods':
-                                        FieldValue.arrayUnion([toMap(product)])
+                                        FieldValue.arrayUnion([toMap(product)]),
+                                    'servings': weight
                                   })
                                 : docRef.set({
-                                    'foods': [toMap(product)]
+                                    'foods': [toMap(product)],
+                                    'servings': weight
                                   })
                           });
                       Navigator.pushNamed(context, '/diary');
@@ -173,6 +158,14 @@ class _ProductDetailsState extends State<ProductDetails> {
       ),
     );
   }
+
+  DocumentReference getMealReference() => _firestore
+      .collection('users')
+      .doc(_auth.currentUser.uid)
+      .collection('date')
+      .doc(formattedDate)
+      .collection('meals')
+      .doc('Meal $selectedMealNumber');
 
   Divider productDetailsDivider() {
     return Divider(
