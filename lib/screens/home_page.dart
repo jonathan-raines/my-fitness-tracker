@@ -15,23 +15,26 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text('Nutriti-OWN'),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          RoundedButton(
-            color: Colors.lightBlue,
-            title: 'Log In',
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/login');
-            },
-          ),
-          RoundedButton(
-            color: Colors.lightBlue,
-            title: 'Register',
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/register');
-            },
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RoundedButton(
+              color: Colors.lightBlue,
+              title: 'Log In',
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+            ),
+            RoundedButton(
+              color: Colors.lightBlue,
+              title: 'Register',
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/register');
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
