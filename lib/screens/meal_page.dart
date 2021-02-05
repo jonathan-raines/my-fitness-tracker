@@ -42,7 +42,7 @@ class _MealsState extends State<Meals> {
   int totalCalories = 0;
   double totalProtein = 0, totalCarbs = 0, totalFats = 0;
 
-  Future<void> _askedToLead(QueryDocumentSnapshot meal, dynamic food) async {
+  Future<void> _foodEditMenu(QueryDocumentSnapshot meal, dynamic food) async {
     switch (await showDialog<FoodContextOptions>(
         context: context,
         builder: (BuildContext context) {
@@ -80,7 +80,10 @@ class _MealsState extends State<Meals> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Diary'),
+        title: Text(
+          'My Diary',
+          style: TextStyle(fontFamily: 'Lato', fontSize: 28),
+        ),
         centerTitle: true,
         backgroundColor: Colors.teal.shade600,
       ),
@@ -101,17 +104,29 @@ class _MealsState extends State<Meals> {
               totalFats = 0;
 
               for (var meal in meals) {
-                mealWidgets.add(Text('${meal.id}'));
+                mealWidgets.add(
+                  Text(
+                    '${meal.id}',
+                    style: mealLabelsTextStyle,
+                  ),
+                );
                 for (var food in meal.data()['foods']) {
                   mealWidgets.add(ListTile(
-                    title: Text('${food['productName']}'),
-                    trailing: Text('Servings: ${food['servings']}'),
+                    title: Text(
+                      '${food['productName']}',
+                      style: foodLabelTextStyle,
+                    ),
+                    trailing: Text(
+                      'Servings: ${food['servings']}',
+                      style: foodLabelTextStyle,
+                    ),
                     subtitle: Text(
-                      'Protein: ${(food['nutriments']['proteinsServing'] * food['servings']).round()} Carbohydrates: ${(food['nutriments']['carbohydratesServing'] * food['servings']).round()} Fats: ${(food['nutriments']['fatServing'] * food['servings']).round()}',
+                      'Protein: ${(food['nutriments']['proteinsServing'] * food['servings']).round()} Carbohydrates: ${(food['nutriments']['carbohydratesServing'] * food['servings']).round()} Fats: ${(food['nutriments']['fatServing'] * food['servings']).round()},',
+                      style: foodLabelTextStyle,
                       textAlign: TextAlign.start,
                     ),
                     onLongPress: () {
-                      _askedToLead(meal, food);
+                      _foodEditMenu(meal, food);
                       /*  */
                     },
                     onTap: () {
@@ -129,9 +144,14 @@ class _MealsState extends State<Meals> {
                 }
               }
               mealWidgets.add(ListTile(
-                title: Text('Totals: '),
+                title: Text(
+                  'Totals: ',
+                  style: foodLabelTextStyle,
+                ),
                 subtitle: Text(
-                    'Calories: $totalCalories, Protein: ${totalProtein.round()}, Carbohydrates: ${totalCarbs.round()}, Fats: ${totalFats.round()}'),
+                  'Calories: $totalCalories, Protein: ${totalProtein.round()}, Carbohydrates: ${totalCarbs.round()}, Fats: ${totalFats.round()}',
+                  style: foodLabelTextStyle,
+                ),
               ));
               return Column(
                 children: mealWidgets,
@@ -157,14 +177,32 @@ class _MealsState extends State<Meals> {
               ),
             ],
           ),
-          TextButton(
-            child: Text('Sign out'),
-            onPressed: () {
-              _auth.signOut();
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-            },
-          )
         ],
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: const EdgeInsets.all(0.0),
+          children: [
+            DrawerHeader(
+              child: Text('Settings'),
+              decoration: BoxDecoration(
+                color: Colors.teal.shade600,
+              ),
+            ),
+            ListTile(
+              title: Text(
+                'Sign out',
+                style: TextStyle(fontFamily: 'Lato', fontSize: 18),
+              ),
+              trailing: Icon(Icons.logout),
+              onTap: () {
+                _auth.signOut();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
+              },
+            )
+          ],
+        ),
       ),
     );
   }
