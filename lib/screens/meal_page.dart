@@ -156,6 +156,13 @@ class _MealsState extends State<Meals> {
                 child: scanBarcodeButton,
               ),
             ],
+          ),
+          TextButton(
+            child: Text('Sign out'),
+            onPressed: () {
+              _auth.signOut();
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+            },
           )
         ],
       ),
