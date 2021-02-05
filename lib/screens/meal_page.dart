@@ -39,12 +39,8 @@ class _MealsState extends State<Meals> {
     }
   }
 
-  double totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFats = 0;
-
-  double calculateCalories() =>
-      (((totalProtein * 4) + (totalCarbs * 4) + (totalFats * 9)) / 10.0)
-          .roundToDouble() *
-      10;
+  int totalCalories = 0;
+  double totalProtein = 0, totalCarbs = 0, totalFats = 0;
 
   Future<void> _askedToLead(QueryDocumentSnapshot meal, dynamic food) async {
     switch (await showDialog<FoodContextOptions>(
@@ -82,7 +78,6 @@ class _MealsState extends State<Meals> {
 
   @override
   Widget build(BuildContext context) {
-    calculateCalories();
     return Scaffold(
       appBar: AppBar(
         title: Text('My Diary'),
@@ -110,8 +105,9 @@ class _MealsState extends State<Meals> {
                 for (var food in meal.data()['foods']) {
                   mealWidgets.add(ListTile(
                     title: Text('${food['productName']}'),
+                    trailing: Text('Servings: ${food['servings']}'),
                     subtitle: Text(
-                      'Protein: ${food['nutriments']['proteinsServing'].toInt()} Carbohydrates: ${food['nutriments']['carbohydratesServing'].toInt()} Fats: ${food['nutriments']['fatServing'].toInt()}',
+                      'Protein: ${(food['nutriments']['proteinsServing'] * food['servings']).round()} Carbohydrates: ${(food['nutriments']['carbohydratesServing'] * food['servings']).round()} Fats: ${(food['nutriments']['fatServing'] * food['servings']).round()}',
                       textAlign: TextAlign.start,
                     ),
                     onLongPress: () {
@@ -123,16 +119,19 @@ class _MealsState extends State<Meals> {
                           arguments: fromMap(food, food['nutriments']));
                     },
                   ));
-                  totalProtein += food['nutriments']['proteinsServing'];
-                  totalCarbs += food['nutriments']['carbohydratesServing'];
-                  totalFats += food['nutriments']['fatServing'];
+                  totalProtein +=
+                      food['nutriments']['proteinsServing'] * food['servings'];
+                  totalCarbs += food['nutriments']['carbohydratesServing'] *
+                      food['servings'];
+                  totalFats +=
+                      food['nutriments']['fatServing'] * food['servings'];
+                  totalCalories += food['calories'] * food['servings'];
                 }
               }
-              totalCalories = calculateCalories();
               mealWidgets.add(ListTile(
                 title: Text('Totals: '),
                 subtitle: Text(
-                    'Calories: $totalCalories, Protein: $totalProtein, Carbohydrates: $totalCarbs, Fats: $totalFats'),
+                    'Calories: $totalCalories, Protein: ${totalProtein.round()}, Carbohydrates: ${totalCarbs.round()}, Fats: ${totalFats.round()}'),
               ));
               return Column(
                 children: mealWidgets,
