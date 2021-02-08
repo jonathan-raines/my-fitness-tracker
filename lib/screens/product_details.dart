@@ -43,12 +43,13 @@ class _ProductDetailsState extends State<ProductDetails> {
   @override
   Widget build(BuildContext context) {
     final Product product = ModalRoute.of(context).settings.arguments;
-    double calories = (((product.nutriments.proteinsServing * 4) +
-                    (product.nutriments.carbohydratesServing * 4) +
-                    (product.nutriments.fatServing * 9)) /
-                10.0)
-            .roundToDouble() *
-        10;
+    product.nutriments.energyServing =
+        (((product.nutriments.proteinsServing * 4) +
+                        (product.nutriments.carbohydratesServing * 4) +
+                        (product.nutriments.fatServing * 9)) /
+                    10.0)
+                .roundToDouble() *
+            10;
     return Scaffold(
       appBar: AppBar(
         title: Text('Food Details'),
@@ -62,7 +63,9 @@ class _ProductDetailsState extends State<ProductDetails> {
             children: [
               productDetailsWidget(product.productName, 'Name'),
               productDetailsWidget(product.servingSize, 'Serving Size'),
-              productDetailsWidget(calories.toString(), 'Calories'),
+              productDetailsWidget(
+                  '${product.nutriments.energyServing.round().toString()}',
+                  'Calories'),
               productDetailsWidget(
                   '${product.nutriments.proteinsServing.round().toString()} g',
                   'Protein'),
@@ -72,9 +75,6 @@ class _ProductDetailsState extends State<ProductDetails> {
               productDetailsWidget(
                   '${product.nutriments.fatServing.round().toString()} g',
                   'Fats'),
-              productDetailsWidget(
-                  '${product.nutriments.sugarsServing.round().toString()} g',
-                  'Sugars'),
               productDetailsDivider(),
               Padding(
                 padding: const EdgeInsets.all(12.0),

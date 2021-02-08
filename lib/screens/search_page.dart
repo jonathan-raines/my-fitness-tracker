@@ -34,31 +34,50 @@ class _SearchPageState extends State<SearchPage> {
               ),
             ),
           ),
-          Container(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              onPressed: () async {
-                focusNode.unfocus();
-                result = await productSearchKeywords([myController.text]);
-                foodResultsTiles = [];
-                for (Product product in result.products) {
-                  if (product.productName != null && product.servingSize != null) {
-                    foodResultsTiles.add(
-                      ListTile(
-                        title: Text(product.productName ?? ''),
-                        trailing: Text('Serving Size: ${product.servingSize}'),
-                        onTap: () => Navigator.pushNamed(context, '/details', arguments: product),
-                      ),
-                    );
-                  }
-                  setState(() {});
-                }
-              },
-              child: Text('Search'),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                padding: EdgeInsets.only(right: 10),
+                child: ElevatedButton(
+                  child: Text('Custom Food'),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/custom');
+                  },
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 10, right: 10),
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    focusNode.unfocus();
+                    result = await productSearchKeywords([myController.text]);
+                    foodResultsTiles = [];
+                    for (Product product in result.products) {
+                      if (product.productName != null &&
+                          product.servingSize != null) {
+                        foodResultsTiles.add(
+                          ListTile(
+                            title: Text(product.productName ?? ''),
+                            trailing:
+                                Text('Serving Size: ${product.servingSize}'),
+                            onTap: () => Navigator.pushNamed(
+                                context, '/details',
+                                arguments: product),
+                          ),
+                        );
+                      }
+                      setState(() {});
+                    }
+                  },
+                  child: Text('Search'),
+                ),
+              ),
+            ],
           ),
           Expanded(
-              child: ListView(
+            child: ListView(
               children: foodResultsTiles,
             ),
           ),
