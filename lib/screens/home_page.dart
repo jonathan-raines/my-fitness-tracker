@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_fitness_tracker/functions.dart';
 
 import '../components/rounded_button.dart';
 
@@ -11,10 +12,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Nutriti-OWN'),
-        centerTitle: true,
-      ),
+      appBar: buildAppBar('Nutriti-OWN'),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -113,14 +113,7 @@ class _MealsState extends State<Meals> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'My Diary',
-          style: TextStyle(fontFamily: 'Lato', fontSize: 28),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.teal.shade600,
-      ),
+      appBar: buildAppBar('Food Diary'),
       body: Column(
         children: [
           StreamBuilder<QuerySnapshot>(

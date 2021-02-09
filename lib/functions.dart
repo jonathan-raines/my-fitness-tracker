@@ -195,3 +195,14 @@ void getProductFromBarcode(BuildContext context) async {
     },
   );
 }
+
+AppBar buildAppBar(String title) {
+  return AppBar(
+    title: Text(
+      title,
+      style: TextStyle(fontFamily: 'Lato', fontSize: 28),
+    ),
+    centerTitle: true,
+    backgroundColor: Colors.teal.shade600,
+  );
+}

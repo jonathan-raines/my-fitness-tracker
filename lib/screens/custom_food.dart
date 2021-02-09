@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_fitness_tracker/functions.dart';
 import 'package:openfoodfacts/model/Nutriments.dart';
 import 'package:openfoodfacts/model/Product.dart';
 
@@ -15,9 +16,7 @@ class _CustomProductFormState extends State<CustomProductForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Custom Food'),
-      ),
+      appBar: buildAppBar('Add Custom Food'),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,

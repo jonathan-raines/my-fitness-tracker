@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_fitness_tracker/functions.dart';
 
 import '../constants.dart';
 import '../components/rounded_button.dart';
@@ -15,10 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-        centerTitle: true,
-      ),
+      appBar: buildAppBar('Login'),
       body: Column(
         children: [
           SizedBox(

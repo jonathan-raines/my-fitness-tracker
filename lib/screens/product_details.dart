@@ -52,11 +52,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 .roundToDouble() *
             10;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Food Details'),
-        backgroundColor: Colors.teal.shade600,
-        centerTitle: true,
-      ),
+      appBar: buildAppBar('Product Details'),
       body: SingleChildScrollView(
         child: Center(
           child: Column(

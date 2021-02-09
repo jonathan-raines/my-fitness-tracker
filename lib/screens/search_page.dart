@@ -17,11 +17,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Search for Products'),
-        centerTitle: true,
-        backgroundColor: Colors.teal.shade600,
-      ),
+      appBar: buildAppBar('Search'),
       body: Column(
         children: [
           Padding(
