@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:openfoodfacts/model/Nutriments.dart';
 import 'package:openfoodfacts/model/Product.dart';
 import 'package:openfoodfacts/model/parameter/SearchTerms.dart';
@@ -20,7 +21,7 @@ Future<String> scanBarcode() async {
   return barcodeScanRes;
 }
 
-Future<Product> getProduct(String barcode) async {
+Future<Product> searchProductFromBarcode(String barcode) async {
   ProductQueryConfiguration configurations = ProductQueryConfiguration(barcode,
       language: OpenFoodFactsLanguage.ENGLISH, fields: productSearchFields);
 
@@ -37,7 +38,7 @@ Future<dynamic> productSearchKeywords(List<String> keywords) async {
   var parameters = <Parameter>[
     SearchTerms(terms: keywords),
     const OutputFormat(format: Format.JSON),
-    const Page(page: 0),
+    // const Page(page: 0),
     const PageSize(size: 25),
     const SearchSimple(active: true),
     const SortBy(option: SortOption.POPULARITY),
@@ -163,3 +164,34 @@ Nutriments nutrimentsFromMap(Map<String, dynamic> map) => Nutriments(
       polyunsaturatedAcid: map['polyunsaturatedAcid'],
       polyunsaturatedServing: map['polyunsaturatedServing'],
     );
+
+void getProductFromBarcode(BuildContext context) async {
+  Product product = await searchProductFromBarcode(await scanBarcode());
+  if (product != null) {
+    Navigator.pushNamed(context, '/details', arguments: product);
+  }
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Food not found'),
+        content: Text('Would you like to create a custom food?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.popAndPushNamed(context, '/custom');
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      );
+    },
+  );
+}

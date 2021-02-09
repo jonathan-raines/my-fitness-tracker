@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_fitness_tracker/constants.dart';
-import 'package:openfoodfacts/openfoodfacts.dart';
-import '../services.dart';
+import '../functions.dart';
 import '../constants.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -82,7 +81,7 @@ class _MealsState extends State<Meals> {
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            //title: const Text('Select assignment'),
+            title: Text('${meal.id}: ${food['productName']}'),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
@@ -198,38 +197,8 @@ class _MealsState extends State<Meals> {
                 child: addFoodButton,
               ),
               TextButton(
-                onPressed: () async {
-                  Product product = await getProduct(await scanBarcode());
-                  if (product != null) {
-                    Navigator.pushNamed(context, '/details',
-                        arguments: product);
-                  } else {
-                    return showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Food not found'),
-                          content:
-                              Text('Would you like to create a custom food?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('No'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.popAndPushNamed(context, '/custom');
-                              },
-                              child: Text('Yes'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
+                onPressed: () {
+                  getProductFromBarcode(context);
                 },
                 child: scanBarcodeButton,
               ),

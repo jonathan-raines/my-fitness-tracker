@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:my_fitness_tracker/services.dart';
+import 'package:my_fitness_tracker/functions.dart';
 import 'package:openfoodfacts/model/Product.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -86,8 +86,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  // TODO allow user to add food by servings / serving size or by grams
-                  // TODO fix macros totals for fractional servings
                   Expanded(
                     child: Container(
                       padding: EdgeInsets.only(right: 60),

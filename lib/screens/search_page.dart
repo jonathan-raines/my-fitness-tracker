@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_fitness_tracker/services.dart';
+import 'package:my_fitness_tracker/functions.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 
 class SearchPage extends StatefulWidget {
@@ -23,7 +23,6 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: Column(
         children: [
-          // TODO add button for scanning barcode straight from search page
           Padding(
             padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
             child: TextField(
@@ -36,7 +35,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
                 padding: EdgeInsets.only(right: 10),
@@ -44,6 +43,15 @@ class _SearchPageState extends State<SearchPage> {
                   child: Text('Custom Food'),
                   onPressed: () {
                     Navigator.pushNamed(context, '/custom');
+                  },
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(right: 10),
+                child: ElevatedButton(
+                  child: Text('Scan Barcode'),
+                  onPressed: () {
+                    getProductFromBarcode(context);
                   },
                 ),
               ),
