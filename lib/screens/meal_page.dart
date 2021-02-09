@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_fitness_tracker/constants.dart';
-import 'package:openfoodfacts/openfoodfacts.dart';
-import '../services.dart';
+import '../functions.dart';
 import '../constants.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -39,15 +38,50 @@ class _MealsState extends State<Meals> {
     }
   }
 
-  int totalCalories = 0;
-  double totalProtein = 0, totalCarbs = 0, totalFats = 0;
+  double totalCalories, totalProtein, totalCarbs, totalFats;
 
-  Future<void> _askedToLead(QueryDocumentSnapshot meal, dynamic food) async {
+  Text caloriesByGramOrServing(dynamic food) {
+    double protein, carbs, fats, calories;
+    if (food['logByWeight']) {
+      protein =
+          ((food['nutriments']['proteins'] / 100) * food['loggedServings'])
+              .roundToDouble();
+      carbs =
+          ((food['nutriments']['carbohydrates'] / 100) * food['loggedServings'])
+              .roundToDouble();
+      fats = ((food['nutriments']['fat'] / 100) * food['loggedServings'])
+          .roundToDouble();
+      calories = ((food['caloriesPerGram'] * food['loggedServings']) / 10)
+              .roundToDouble() *
+          10;
+    } else {
+      // food was logged by servings instead of my grams
+      protein = (food['nutriments']['proteinsServing'] * food['loggedServings'])
+          .roundToDouble();
+      carbs =
+          (food['nutriments']['carbohydratesServing'] * food['loggedServings'])
+              .roundToDouble();
+      fats = (food['nutriments']['fatServing'] * food['loggedServings'])
+          .roundToDouble();
+      calories = ((food['caloriesPerServing'] * food['loggedServings']) / 10)
+              .roundToDouble() *
+          10;
+    }
+    totalCalories += calories;
+    totalProtein += protein;
+    totalCarbs += carbs;
+    totalFats += fats;
+
+    return Text(
+        'Calories: ${calories.round()}, Protein: ${protein.round()}, Carbs: ${carbs.round()}, Fat: ${fats.round()}');
+  }
+
+  Future<void> _foodEditMenu(QueryDocumentSnapshot meal, dynamic food) async {
     switch (await showDialog<FoodContextOptions>(
         context: context,
         builder: (BuildContext context) {
           return SimpleDialog(
-            //title: const Text('Select assignment'),
+            title: Text('${meal.id}: ${food['productName']}'),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
@@ -65,8 +99,10 @@ class _MealsState extends State<Meals> {
           );
         })) {
       case FoodContextOptions.edit:
-        Navigator.pushNamed(context, '/details',
-            arguments: fromMap(food, food['nutriments']));
+        Navigator.pushNamed(context, '/edit',
+            arguments: productFromMap(food, food['nutriments']));
+        /* Navigator.pushNamed(context, '/details',
+            arguments: productFromMap(food, food['nutriments'])); */
         break;
       case FoodContextOptions.delete:
         docRef.doc(meal.id).update({
@@ -79,11 +115,7 @@ class _MealsState extends State<Meals> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('My Diary'),
-        centerTitle: true,
-        backgroundColor: Colors.teal.shade600,
-      ),
+      appBar: buildAppBar('Food Diary'),
       body: Column(
         children: [
           StreamBuilder<QuerySnapshot>(
@@ -92,6 +124,7 @@ class _MealsState extends State<Meals> {
               if (!snapshot.hasData) {
                 return CircularProgressIndicator();
               }
+
               final meals = snapshot.data.docs;
 
               List<Widget> mealWidgets = [];
@@ -101,37 +134,47 @@ class _MealsState extends State<Meals> {
               totalFats = 0;
 
               for (var meal in meals) {
-                mealWidgets.add(Text('${meal.id}'));
+                // TODO enable user to add food to selected meal id by clicking on heading
+                mealWidgets.add(
+                  Text(
+                    '${meal.id}',
+                    style: mealLabelsTextStyle,
+                  ),
+                );
                 for (var food in meal.data()['foods']) {
-                  mealWidgets.add(ListTile(
-                    title: Text('${food['productName']}'),
-                    trailing: Text('Servings: ${food['servings']}'),
-                    subtitle: Text(
-                      'Protein: ${(food['nutriments']['proteinsServing'] * food['servings']).round()} Carbohydrates: ${(food['nutriments']['carbohydratesServing'] * food['servings']).round()} Fats: ${(food['nutriments']['fatServing'] * food['servings']).round()}',
-                      textAlign: TextAlign.start,
+                  mealWidgets.add(
+                    ListTile(
+                      title: Text(
+                        '${food['productName']}',
+                        style: foodLabelTextStyle,
+                      ),
+                      trailing: Text(
+                        'Servings: ${food['loggedServings']}',
+                        style: foodLabelTextStyle,
+                      ),
+                      subtitle: caloriesByGramOrServing(food),
+                      onLongPress: () {
+                        // TODO query document for this item and edit this one item
+                        _foodEditMenu(meal, food);
+                      },
+                      onTap: () {
+                        Navigator.pushNamed(context, '/details',
+                            arguments:
+                                productFromMap(food, food['nutriments']));
+                      },
                     ),
-                    onLongPress: () {
-                      _askedToLead(meal, food);
-                      /*  */
-                    },
-                    onTap: () {
-                      Navigator.pushNamed(context, '/details',
-                          arguments: fromMap(food, food['nutriments']));
-                    },
-                  ));
-                  totalProtein +=
-                      food['nutriments']['proteinsServing'] * food['servings'];
-                  totalCarbs += food['nutriments']['carbohydratesServing'] *
-                      food['servings'];
-                  totalFats +=
-                      food['nutriments']['fatServing'] * food['servings'];
-                  totalCalories += food['calories'] * food['servings'];
+                  );
                 }
               }
               mealWidgets.add(ListTile(
-                title: Text('Totals: '),
+                title: Text(
+                  'Totals: ',
+                  style: foodLabelTextStyle,
+                ),
                 subtitle: Text(
-                    'Calories: $totalCalories, Protein: ${totalProtein.round()}, Carbohydrates: ${totalCarbs.round()}, Fats: ${totalFats.round()}'),
+                  'Calories: ${totalCalories.round()}, Protein: ${totalProtein.round()}, Carbohydrates: ${totalCarbs.round()}, Fats: ${totalFats.round()}',
+                  style: foodLabelTextStyle,
+                ),
               ));
               return Column(
                 children: mealWidgets,
@@ -148,23 +191,49 @@ class _MealsState extends State<Meals> {
                 child: addFoodButton,
               ),
               TextButton(
-                onPressed: () async {
-                  Product product = await getProduct(await scanBarcode());
-
-                  Navigator.pushNamed(context, '/details', arguments: product);
+                onPressed: () {
+                  getProductFromBarcode(context);
                 },
                 child: scanBarcodeButton,
               ),
             ],
           ),
-          TextButton(
-            child: Text('Sign out'),
-            onPressed: () {
-              _auth.signOut();
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-            },
-          )
         ],
+      ),
+      endDrawer: Drawer(
+        child: ListView(
+          padding: const EdgeInsets.all(0.0),
+          children: [
+            DrawerHeader(
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+              child: Text(
+                'Settings',
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  fontSize: 32,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.teal.shade600,
+              ),
+            ),
+            ListTile(
+              title: Text(
+                'Sign out',
+                style: TextStyle(fontFamily: 'Lato', fontSize: 21),
+              ),
+              trailing: Icon(Icons.logout),
+              onTap: () {
+                _auth.signOut();
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
+              },
+            )
+          ],
+        ),
       ),
     );
   }

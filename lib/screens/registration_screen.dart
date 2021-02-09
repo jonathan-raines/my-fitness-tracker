@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_fitness_tracker/components/rounded_button.dart';
 import 'package:my_fitness_tracker/constants.dart';
+import 'package:my_fitness_tracker/functions.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -14,10 +15,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Register'),
-        centerTitle: true,
-      ),
+      appBar: buildAppBar('Registration'),
       body: Column(
         children: [
           SizedBox(
@@ -53,7 +51,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     .createUserWithEmailAndPassword(
                         email: email, password: password);
 
-                if (userCredential != null) {
+                User user = FirebaseAuth.instance.currentUser;
+                user.sendEmailVerification();
+
+                if (userCredential != null && user.emailVerified) {
                   Navigator.pushNamed(context, '/diary');
                 }
               } on FirebaseAuthException catch (e) {

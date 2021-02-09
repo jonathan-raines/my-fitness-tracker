@@ -45,3 +45,11 @@ const productSearchFields = [
 const int numberOfMeals = 5;
 
 enum FoodContextOptions { edit, delete }
+
+var mealLabelsTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  fontSize: 24.0,
+  fontWeight: FontWeight.bold,
+);
+
+var foodLabelTextStyle = TextStyle(fontFamily: 'Lato');

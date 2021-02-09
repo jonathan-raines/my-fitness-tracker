@@ -35,9 +35,6 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: Hanalei
-      fonts:
-        - asset: fonts/Hanalei/Hanalei-Regular.ttf
     - family: Lato
       fonts:
         - asset: fonts/Lato/Lato-Regular.ttf

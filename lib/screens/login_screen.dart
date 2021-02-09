@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:my_fitness_tracker/functions.dart';
 
 import '../constants.dart';
 import '../components/rounded_button.dart';
@@ -15,10 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-        centerTitle: true,
-      ),
+      appBar: buildAppBar('Login'),
       body: Column(
         children: [
           SizedBox(
@@ -45,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
               password = value;
             },
           ),
+          // TODO add password verification field
           RoundedButton(
             color: Colors.lightGreen,
             title: 'Login',
@@ -54,7 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     .signInWithEmailAndPassword(
                         email: email, password: password);
 
-                if (userCredential != null) {
+                if (userCredential != null &&
+                    FirebaseAuth.instance.currentUser.emailVerified) {
                   Navigator.pushReplacementNamed(context, '/diary');
                 }
               } on FirebaseAuthException catch (e) {
@@ -67,6 +67,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 print(e);
               }
             },
+          ),
+          //
+          TextButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+            },
+            child: Text('Reset Password'),
           )
         ],
       ),
