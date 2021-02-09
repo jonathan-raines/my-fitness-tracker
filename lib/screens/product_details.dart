@@ -177,6 +177,17 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
               ),
               productDetailsDivider(),
+              ElevatedButton(
+                child: Text('Query'),
+                onPressed: () {
+                  var docRef = _firestore
+                      .collection('users')
+                      .doc(_auth.currentUser.uid)
+                      .collection('date')
+                      .doc(formattedDate)
+                      .collection('meals');
+                },
+              ),
             ],
           ),
         ),

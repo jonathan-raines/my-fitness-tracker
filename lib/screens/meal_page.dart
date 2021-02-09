@@ -99,8 +99,10 @@ class _MealsState extends State<Meals> {
           );
         })) {
       case FoodContextOptions.edit:
-        Navigator.pushNamed(context, '/details',
+        Navigator.pushNamed(context, '/edit',
             arguments: productFromMap(food, food['nutriments']));
+        /* Navigator.pushNamed(context, '/details',
+            arguments: productFromMap(food, food['nutriments'])); */
         break;
       case FoodContextOptions.delete:
         docRef.doc(meal.id).update({

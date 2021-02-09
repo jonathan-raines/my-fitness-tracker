@@ -53,10 +53,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     .signInWithEmailAndPassword(
                         email: email, password: password);
 
-                if (userCredential != null) {
+                if (userCredential != null &&
+                    FirebaseAuth.instance.currentUser.emailVerified) {
                   Navigator.pushReplacementNamed(context, '/diary');
                 }
-                // TODO implement verification email
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
                   print('The password provided is too weak.');
@@ -67,8 +67,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 print(e);
               }
             },
+          ),
+          //
+          TextButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+            },
+            child: Text('Reset Password'),
           )
-          // TODO implement FORGOT PASSWORD
         ],
       ),
     );

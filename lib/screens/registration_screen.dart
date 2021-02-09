@@ -51,7 +51,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     .createUserWithEmailAndPassword(
                         email: email, password: password);
 
-                if (userCredential != null) {
+                User user = FirebaseAuth.instance.currentUser;
+                user.sendEmailVerification();
+
+                if (userCredential != null && user.emailVerified) {
                   Navigator.pushNamed(context, '/diary');
                 }
               } on FirebaseAuthException catch (e) {
