@@ -45,6 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
               password = value;
             },
           ),
+          // TODO add password verification field
           RoundedButton(
             color: Colors.lightGreen,
             title: 'Login',
@@ -57,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (userCredential != null) {
                   Navigator.pushReplacementNamed(context, '/diary');
                 }
+                // TODO implement verification email
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
                   print('The password provided is too weak.');
@@ -68,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
               }
             },
           )
+          // TODO implement FORGOT PASSWORD
         ],
       ),
     );

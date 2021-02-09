@@ -39,8 +39,43 @@ class _MealsState extends State<Meals> {
     }
   }
 
-  int totalCalories = 0;
-  double totalProtein = 0, totalCarbs = 0, totalFats = 0;
+  double totalCalories, totalProtein, totalCarbs, totalFats;
+
+  Text caloriesByGramOrServing(dynamic food) {
+    double protein, carbs, fats, calories;
+    if (food['logByWeight']) {
+      protein =
+          ((food['nutriments']['proteins'] / 100) * food['loggedServings'])
+              .roundToDouble();
+      carbs =
+          ((food['nutriments']['carbohydrates'] / 100) * food['loggedServings'])
+              .roundToDouble();
+      fats = ((food['nutriments']['fat'] / 100) * food['loggedServings'])
+          .roundToDouble();
+      calories = ((food['caloriesPerGram'] * food['loggedServings']) / 10)
+              .roundToDouble() *
+          10;
+    } else {
+      // food was logged by servings instead of my grams
+      protein = (food['nutriments']['proteinsServing'] * food['loggedServings'])
+          .roundToDouble();
+      carbs =
+          (food['nutriments']['carbohydratesServing'] * food['loggedServings'])
+              .roundToDouble();
+      fats = (food['nutriments']['fatServing'] * food['loggedServings'])
+          .roundToDouble();
+      calories = ((food['caloriesPerServing'] * food['loggedServings']) / 10)
+              .roundToDouble() *
+          10;
+    }
+    totalCalories += calories;
+    totalProtein += protein;
+    totalCarbs += carbs;
+    totalFats += fats;
+
+    return Text(
+        'Calories: ${calories.round()}, Protein: ${protein.round()}, Carbs: ${carbs.round()}, Fat: ${fats.round()}');
+  }
 
   Future<void> _foodEditMenu(QueryDocumentSnapshot meal, dynamic food) async {
     switch (await showDialog<FoodContextOptions>(
@@ -66,7 +101,7 @@ class _MealsState extends State<Meals> {
         })) {
       case FoodContextOptions.edit:
         Navigator.pushNamed(context, '/details',
-            arguments: fromMap(food, food['nutriments']));
+            arguments: productFromMap(food, food['nutriments']));
         break;
       case FoodContextOptions.delete:
         docRef.doc(meal.id).update({
@@ -95,6 +130,7 @@ class _MealsState extends State<Meals> {
               if (!snapshot.hasData) {
                 return CircularProgressIndicator();
               }
+
               final meals = snapshot.data.docs;
 
               List<Widget> mealWidgets = [];
@@ -104,6 +140,7 @@ class _MealsState extends State<Meals> {
               totalFats = 0;
 
               for (var meal in meals) {
+                // TODO enable user to add food to selected meal id by clicking on heading
                 mealWidgets.add(
                   Text(
                     '${meal.id}',
@@ -111,36 +148,29 @@ class _MealsState extends State<Meals> {
                   ),
                 );
                 for (var food in meal.data()['foods']) {
-                  mealWidgets.add(ListTile(
-                    title: Text(
-                      '${food['productName']}',
-                      style: foodLabelTextStyle,
+                  print(food.toString());
+                  mealWidgets.add(
+                    ListTile(
+                      title: Text(
+                        '${food['productName']}',
+                        style: foodLabelTextStyle,
+                      ),
+                      trailing: Text(
+                        'Servings: ${food['loggedServings']}',
+                        style: foodLabelTextStyle,
+                      ),
+                      subtitle: caloriesByGramOrServing(food),
+                      onLongPress: () {
+                        // TODO query document for this item and edit this one item
+                        _foodEditMenu(meal, food);
+                      },
+                      onTap: () {
+                        Navigator.pushNamed(context, '/details',
+                            arguments:
+                                productFromMap(food, food['nutriments']));
+                      },
                     ),
-                    trailing: Text(
-                      'Servings: ${food['servings']}',
-                      style: foodLabelTextStyle,
-                    ),
-                    subtitle: Text(
-                      'Protein: ${(food['nutriments']['proteinsServing'] * food['servings']).round()} Carbohydrates: ${(food['nutriments']['carbohydratesServing'] * food['servings']).round()} Fats: ${(food['nutriments']['fatServing'] * food['servings']).round()},',
-                      style: foodLabelTextStyle,
-                      textAlign: TextAlign.start,
-                    ),
-                    onLongPress: () {
-                      _foodEditMenu(meal, food);
-                      /*  */
-                    },
-                    onTap: () {
-                      Navigator.pushNamed(context, '/details',
-                          arguments: fromMap(food, food['nutriments']));
-                    },
-                  ));
-                  totalProtein +=
-                      food['nutriments']['proteinsServing'] * food['servings'];
-                  totalCarbs += food['nutriments']['carbohydratesServing'] *
-                      food['servings'];
-                  totalFats +=
-                      food['nutriments']['fatServing'] * food['servings'];
-                  totalCalories += food['calories'] * food['servings'];
+                  );
                 }
               }
               mealWidgets.add(ListTile(
@@ -149,7 +179,7 @@ class _MealsState extends State<Meals> {
                   style: foodLabelTextStyle,
                 ),
                 subtitle: Text(
-                  'Calories: $totalCalories, Protein: ${totalProtein.round()}, Carbohydrates: ${totalCarbs.round()}, Fats: ${totalFats.round()}',
+                  'Calories: ${totalCalories.round()}, Protein: ${totalProtein.round()}, Carbohydrates: ${totalCarbs.round()}, Fats: ${totalFats.round()}',
                   style: foodLabelTextStyle,
                 ),
               ));
@@ -170,8 +200,36 @@ class _MealsState extends State<Meals> {
               TextButton(
                 onPressed: () async {
                   Product product = await getProduct(await scanBarcode());
-
-                  Navigator.pushNamed(context, '/details', arguments: product);
+                  if (product != null) {
+                    Navigator.pushNamed(context, '/details',
+                        arguments: product);
+                  } else {
+                    return showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Food not found'),
+                          content:
+                              Text('Would you like to create a custom food?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('No'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.popAndPushNamed(context, '/custom');
+                              },
+                              child: Text('Yes'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 child: scanBarcodeButton,
               ),

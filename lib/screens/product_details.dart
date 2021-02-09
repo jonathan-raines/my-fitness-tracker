@@ -16,8 +16,9 @@ class _ProductDetailsState extends State<ProductDetails> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-  int weight = 1;
+  double foodWeight = 1;
   int selectedMealNumber = 1;
+  bool logByWeight = true;
 
   DropdownButton<int> androidDropdown() {
     List<DropdownMenuItem<int>> dropdownItems = [];
@@ -64,49 +65,65 @@ class _ProductDetailsState extends State<ProductDetails> {
               productDetailsWidget(product.productName, 'Name'),
               productDetailsWidget(product.servingSize, 'Serving Size'),
               productDetailsWidget(
-                  '${product.nutriments.energyServing.round().toString()}',
-                  'Calories'),
+                  '${product.nutriments.energyServing.toString()}', 'Calories'),
               productDetailsWidget(
-                  '${product.nutriments.proteinsServing.round().toString()} g',
+                  '${product.nutriments.proteinsServing.toString()} g',
                   'Protein'),
               productDetailsWidget(
-                  '${product.nutriments.carbohydratesServing.round().toString()} g',
+                  '${product.nutriments.carbohydratesServing.toString()} g',
                   'Carbohydrates'),
               productDetailsWidget(
-                  '${product.nutriments.fatServing.round().toString()} g',
-                  'Fats'),
+                  '${product.nutriments.fatServing.toString()} g', 'Fats'),
               productDetailsDivider(),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        'Number of Servings',
-                        style: TextStyle(fontFamily: 'Lato', fontSize: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      'Number of Servings',
+                      style: TextStyle(fontFamily: 'Lato', fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  // TODO allow user to add food by servings / serving size or by grams
+                  // TODO fix macros totals for fractional servings
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.only(right: 60),
+                      child: TextField(
+                        textAlignVertical: TextAlignVertical.center,
                         textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(bottom: 12)),
+                        onChanged: (value) {
+                          foodWeight = double.parse(value);
+                        },
                       ),
+                      alignment: Alignment.topLeft,
                     ),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.only(right: 60),
-                        child: TextField(
-                          textAlignVertical: TextAlignVertical.center,
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(bottom: 12)),
-                          onChanged: (value) {
-                            weight = int.parse(value);
-                          },
-                        ),
-                        alignment: Alignment.topLeft,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: DropdownButton(
+                        value: logByWeight,
+                        items: [
+                          DropdownMenuItem(
+                            child: Text('1 g'),
+                            value: true,
+                          ),
+                          DropdownMenuItem(
+                            child: Text('${product.servingSize}'),
+                            value: false,
+                          ),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            logByWeight = value;
+                          });
+                        }),
+                  ),
+                ],
               ),
               Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -145,11 +162,16 @@ class _ProductDetailsState extends State<ProductDetails> {
                         docRef.get().then((doc) => {
                               doc.exists
                                   ? docRef.update({
-                                      'foods': FieldValue.arrayUnion(
-                                          [toMap(product, weight)]),
+                                      'foods': FieldValue.arrayUnion([
+                                        productToMap(
+                                            product, foodWeight, logByWeight)
+                                      ]),
                                     })
                                   : docRef.set({
-                                      'foods': [toMap(product, weight)],
+                                      'foods': [
+                                        productToMap(
+                                            product, foodWeight, logByWeight)
+                                      ]
                                     })
                             });
                         Navigator.popUntil(

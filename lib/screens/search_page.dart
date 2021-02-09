@@ -23,6 +23,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: Column(
         children: [
+          // TODO add button for scanning barcode straight from search page
           Padding(
             padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
             child: TextField(

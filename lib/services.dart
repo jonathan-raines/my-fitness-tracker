@@ -26,10 +26,10 @@ Future<Product> getProduct(String barcode) async {
 
   ProductResult result = await OpenFoodAPIClient.getProduct(configurations);
 
-  if (result.status == 1) {
+  if (result.status == 1 && result.product.productName != null) {
     return result.product;
   } else {
-    throw new Exception("product not found, please insert data for " + barcode);
+    return null;
   }
 }
 
@@ -57,65 +57,71 @@ Future<dynamic> productSearchKeywords(List<String> keywords) async {
   return result;
 }
 
-Map<String, dynamic> toMap(Product product, int weight) => {
-      'barcode': product.barcode,
-      'productName': product.productName,
-      'brands': product.brands,
+Map<String, dynamic> productToMap(
+        Product product, double servingSize, bool logByWeight) =>
+    {
+      'barcode': product.barcode ?? '',
+      'productName': product.productName ?? '',
+      'brands': product.brands ?? '',
       'nutriments': {
-        'salt': product.nutriments.salt,
-        'saltServing': product.nutriments.saltServing,
-        'fiber': product.nutriments.fiber,
-        'fiberServing': product.nutriments.fiberServing,
-        'sugars': product.nutriments.sugars,
-        'sugarsServing': product.nutriments.sugarsServing,
-        'fat': product.nutriments.fat,
-        'fatServing': product.nutriments.fatServing,
-        'saturatedFat': product.nutriments.saturatedFat,
-        'saturatedFatServing': product.nutriments.saturatedFatServing,
-        'proteins': product.nutriments.proteins,
-        'proteinsServing': product.nutriments.proteinsServing,
-        'energyKcal100g': product.nutriments.energyKcal100g,
-        'carbohydrates': product.nutriments.carbohydrates,
-        'carbohydratesServing': product.nutriments.carbohydratesServing,
-        'caffeine': product.nutriments.caffeine,
-        'caffeineServing': product.nutriments.caffeineServing,
-        'calcium': product.nutriments.calcium,
-        'calciumServing': product.nutriments.calciumServing,
-        'iron': product.nutriments.iron,
-        'ironServing': product.nutriments.ironServing,
-        'vitaminC': product.nutriments.vitaminC,
-        'vitaminCServing': product.nutriments.vitaminCServing,
-        'magnesium': product.nutriments.magnesium,
-        'magnesiumServing': product.nutriments.magnesiumServing,
-        'phosphorus': product.nutriments.phosphorus,
-        'phosphorusServing': product.nutriments.phosphorusServing,
-        'potassium': product.nutriments.potassium,
-        'potassiumServing': product.nutriments.potassiumServing,
-        'sodium': product.nutriments.sodium,
-        'sodiumServing': product.nutriments.sodiumServing,
-        'monounsaturatedAcid': product.nutriments.monounsaturatedAcid,
-        'monounsaturatedServing': product.nutriments.monounsaturatedServing,
-        'polyunsaturatedAcid': product.nutriments.polyunsaturatedAcid,
-        'polyunsaturatedServing': product.nutriments.polyunsaturatedServing,
+        'salt': (product.nutriments.salt ?? 0),
+        'saltServing': (product.nutriments.saltServing ?? 0),
+        'fiber': (product.nutriments.fiber ?? 0),
+        'fiberServing': (product.nutriments.fiberServing ?? 0),
+        'sugars': (product.nutriments.sugars ?? 0),
+        'sugarsServing': (product.nutriments.sugarsServing ?? 0),
+        'fat': (product.nutriments.fat ?? 0),
+        'fatServing': (product.nutriments.fatServing ?? 0),
+        'saturatedFat': (product.nutriments.saturatedFat ?? 0),
+        'saturatedFatServing': (product.nutriments.saturatedFatServing ?? 0),
+        'proteins': (product.nutriments.proteins ?? 0),
+        'proteinsServing': (product.nutriments.proteinsServing ?? 0),
+        'energyKcal100g': (product.nutriments.energyKcal100g ?? 0),
+        'carbohydrates': (product.nutriments.carbohydrates ?? 0),
+        'carbohydratesServing': (product.nutriments.carbohydratesServing ?? 0),
+        'caffeine': (product.nutriments.caffeine ?? 0),
+        'caffeineServing': (product.nutriments.caffeineServing ?? 0),
+        'calcium': (product.nutriments.calcium ?? 0),
+        'calciumServing': (product.nutriments.calciumServing ?? 0),
+        'iron': (product.nutriments.iron ?? 0),
+        'ironServing': (product.nutriments.ironServing ?? 0),
+        'vitaminC': (product.nutriments.vitaminC ?? 0),
+        'vitaminCServing': (product.nutriments.vitaminCServing ?? 0),
+        'magnesium': (product.nutriments.magnesium ?? 0),
+        'magnesiumServing': (product.nutriments.magnesiumServing ?? 0),
+        'phosphorus': (product.nutriments.phosphorus ?? 0),
+        'phosphorusServing': (product.nutriments.phosphorusServing ?? 0),
+        'potassium': (product.nutriments.potassium ?? 0),
+        'potassiumServing': (product.nutriments.potassiumServing ?? 0),
+        'sodium': (product.nutriments.sodium ?? 0),
+        'sodiumServing': (product.nutriments.sodiumServing ?? 0),
+        'monounsaturatedAcid': (product.nutriments.monounsaturatedAcid ?? 0),
+        'monounsaturatedServing':
+            (product.nutriments.monounsaturatedServing ?? 0),
+        'polyunsaturatedAcid': (product.nutriments.polyunsaturatedAcid ?? 0),
+        'polyunsaturatedServing':
+            (product.nutriments.polyunsaturatedServing ?? 0),
       },
-      'servingSize': product.servingSize,
-      'servingQuantity': product.servingQuantity,
-      'servings': weight,
-      'calories': (((product.nutriments.proteinsServing * 4) +
+      'servingSize': (product.servingSize ?? 0),
+      'servingQuantity': (product.servingQuantity ?? 0),
+      'caloriesPerServing': (((product.nutriments.proteinsServing * 4) +
                       (product.nutriments.carbohydratesServing * 4) +
                       (product.nutriments.fatServing * 9)) /
                   10.0)
               .round() *
-          10
+          10,
+      'caloriesPerGram': ((product.nutriments.energyKcal100g ?? 0) / 100),
+      'logByWeight': logByWeight,
+      'loggedServings': servingSize
     };
 
-Product fromMap(
+Product productFromMap(
         Map<String, dynamic> productMap, Map<String, dynamic> nutrimentMap) =>
     Product(
       barcode: productMap['barcode'],
       brands: productMap['brands'],
       productName: productMap['productName'],
-      servingQuantity: productMap['servingQuantity'],
+      servingQuantity: productMap['servingQuantity'].toDouble(),
       servingSize: productMap['servingSize'],
       nutriments: nutrimentsFromMap(nutrimentMap),
     );
