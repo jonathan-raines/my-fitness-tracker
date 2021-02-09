@@ -20,6 +20,7 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: Text('Search for Products'),
         centerTitle: true,
+        backgroundColor: Colors.teal.shade600,
       ),
       body: Column(
         children: [
