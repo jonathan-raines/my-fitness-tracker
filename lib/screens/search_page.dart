@@ -52,33 +52,29 @@ class _SearchPageState extends State<SearchPage> {
                   },
                 ),
               ),
-              Container(
-                padding: EdgeInsets.only(left: 10, right: 10),
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    focusNode.unfocus();
-                    result = await productSearchKeywords([myController.text]);
-                    foodResultsTiles = [];
-                    for (Product product in result.products) {
-                      if (product.productName != null &&
-                          product.servingSize != null) {
-                        foodResultsTiles.add(
-                          ListTile(
-                            title: Text(product.productName ?? ''),
-                            trailing:
-                                Text('Serving Size: ${product.servingSize}'),
-                            onTap: () => Navigator.pushNamed(
-                                context, '/details',
-                                arguments: product),
-                          ),
-                        );
-                      }
-                      setState(() {});
+              ElevatedButton(
+                onPressed: () async {
+                  focusNode.unfocus();
+                  result = await productSearchKeywords([myController.text]);
+
+                  foodResultsTiles = [];
+                  for (Product product in result.products) {
+                    if (product.productName != null &&
+                        product.servingSize != null) {
+                      foodResultsTiles.add(
+                        ListTile(
+                          title: Text(product.productName ?? ''),
+                          trailing:
+                              Text('Serving Size: ${product.servingSize}'),
+                          onTap: () => Navigator.pushNamed(context, '/details',
+                              arguments: product),
+                        ),
+                      );
                     }
-                  },
-                  child: Text('Search'),
-                ),
+                    setState(() {});
+                  }
+                },
+                child: Text('Search'),
               ),
             ],
           ),

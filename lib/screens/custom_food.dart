@@ -13,6 +13,21 @@ class _CustomProductFormState extends State<CustomProductForm> {
   final Product customProduct = Product();
   final Nutriments customNutriments = Nutriments();
 
+  void calculateMacrosPer100Gram() {
+    customNutriments.proteins = (customNutriments.proteinsServing /
+        double.parse(customProduct.servingSize) *
+        100);
+    customNutriments.carbohydrates = (customNutriments.carbohydratesServing /
+        double.parse(customProduct.servingSize) *
+        100);
+    customNutriments.fat = (customNutriments.fatServing /
+        double.parse(customProduct.servingSize) *
+        100);
+    customNutriments.energyKcal100g = (customNutriments.proteins * 4) +
+        (customNutriments.carbohydrates * 4) +
+        (customNutriments.fat * 9);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,50 +42,28 @@ class _CustomProductFormState extends State<CustomProductForm> {
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Product Name'),
                   onSaved: (value) => customProduct.productName = value,
-                  validator: (String value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a value';
-                    }
-                    return null;
-                  },
+                  validator: emptyStringValidator,
                 ),
                 TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: 'Serving Size'),
                   onSaved: (value) => customProduct.servingSize = value,
-                  validator: (String value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a value';
-                    }
-                    return null;
-                  },
+                  validator: emptyStringValidator,
                 ),
                 TextFormField(
                   keyboardType: TextInputType.number,
                   decoration:
                       InputDecoration(labelText: 'Calories per Serving'),
-                  onSaved: (value) {
-                    customNutriments.energyServing = double.parse(value);
-                  },
-                  validator: (String value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a value';
-                    }
-                    return null;
-                  },
+                  onSaved: (value) =>
+                      customNutriments.energyServing = double.parse(value),
+                  validator: emptyStringValidator,
                 ),
                 TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: 'Protein per Serving'),
-                  onSaved: (value) {
-                    customNutriments.proteinsServing = double.parse(value);
-                  },
-                  validator: (String value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a value';
-                    }
-                    return null;
-                  },
+                  onSaved: (value) =>
+                      customNutriments.proteinsServing = double.parse(value),
+                  validator: emptyStringValidator,
                 ),
                 TextFormField(
                   keyboardType: TextInputType.number,
@@ -78,29 +71,20 @@ class _CustomProductFormState extends State<CustomProductForm> {
                       InputDecoration(labelText: 'Carbohydrates per Serving'),
                   onSaved: (String grams) => customNutriments
                       .carbohydratesServing = double.parse(grams),
-                  validator: (String value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a value';
-                    }
-                    return null;
-                  },
+                  validator: emptyStringValidator,
                 ),
                 TextFormField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(labelText: 'Fat per Serving'),
                   onSaved: (String grams) =>
                       customNutriments.fatServing = double.parse(grams),
-                  validator: (String value) {
-                    if (value.isEmpty) {
-                      return 'Please enter a value';
-                    }
-                    return null;
-                  },
+                  validator: emptyStringValidator,
                 ),
                 ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
+                        calculateMacrosPer100Gram();
                         customProduct.nutriments = customNutriments;
 
                         Navigator.popAndPushNamed(context, '/details',

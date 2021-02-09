@@ -35,7 +35,6 @@ class _ProductDetailsState extends State<ProductDetails> {
       onChanged: (value) {
         setState(() {
           selectedMealNumber = value;
-          print(selectedMealNumber);
         });
       },
     );
@@ -61,15 +60,17 @@ class _ProductDetailsState extends State<ProductDetails> {
               productDetailsWidget(product.productName, 'Name'),
               productDetailsWidget(product.servingSize, 'Serving Size'),
               productDetailsWidget(
-                  '${product.nutriments.energyServing.toString()}', 'Calories'),
+                  '${product.nutriments.energyServing.round().toString()}',
+                  'Calories'),
               productDetailsWidget(
-                  '${product.nutriments.proteinsServing.toString()} g',
+                  '${product.nutriments.proteinsServing.round().toString()} g',
                   'Protein'),
               productDetailsWidget(
-                  '${product.nutriments.carbohydratesServing.toString()} g',
+                  '${product.nutriments.carbohydratesServing.round().toString()} g',
                   'Carbohydrates'),
               productDetailsWidget(
-                  '${product.nutriments.fatServing.toString()} g', 'Fats'),
+                  '${product.nutriments.fatServing.round().toString()} g',
+                  'Fats'),
               productDetailsDivider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

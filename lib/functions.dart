@@ -206,3 +206,10 @@ AppBar buildAppBar(String title) {
     backgroundColor: Colors.teal.shade600,
   );
 }
+
+String emptyStringValidator(String value) {
+  if (value.isEmpty) {
+    return 'Please enter a value';
+  }
+  return null;
+}

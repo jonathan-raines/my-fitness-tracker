@@ -140,7 +140,6 @@ class _MealsState extends State<Meals> {
                   ),
                 );
                 for (var food in meal.data()['foods']) {
-                  print(food.toString());
                   mealWidgets.add(
                     ListTile(
                       title: Text(
@@ -204,7 +203,17 @@ class _MealsState extends State<Meals> {
           padding: const EdgeInsets.all(0.0),
           children: [
             DrawerHeader(
-              child: Text('Settings'),
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+              child: Text(
+                'Settings',
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  fontSize: 32,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
               decoration: BoxDecoration(
                 color: Colors.teal.shade600,
               ),
@@ -212,7 +221,7 @@ class _MealsState extends State<Meals> {
             ListTile(
               title: Text(
                 'Sign out',
-                style: TextStyle(fontFamily: 'Lato', fontSize: 18),
+                style: TextStyle(fontFamily: 'Lato', fontSize: 21),
               ),
               trailing: Icon(Icons.logout),
               onTap: () {
