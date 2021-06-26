@@ -67,6 +67,7 @@ class _SearchPageState extends State<SearchPage> {
                           title: Text(product.productName ?? ''),
                           trailing:
                               Text('Serving Size: ${product.servingSize}'),
+                          // FIX: Backing from this page twice signs out and takes to homepage
                           onTap: () => Navigator.pushNamed(context, '/details',
                               arguments: product),
                         ),
