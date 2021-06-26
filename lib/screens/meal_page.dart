@@ -134,7 +134,7 @@ class _MealsState extends State<Meals> {
               totalFats = 0;
 
               for (var meal in meals) {
-                // TODO enable user to add food to selected meal id by clicking on heading
+                // TODO: enable user to add food to selected meal id by clicking on heading
                 mealWidgets.add(
                   Text(
                     '${meal.id}',
@@ -154,7 +154,7 @@ class _MealsState extends State<Meals> {
                 /*       ), */
                 /*       subtitle: caloriesByGramOrServing(food), */
                 /*       onLongPress: () { */
-                /*         // TODO query document for this item and edit this one item */
+                /*         // TODO: query document for this item and edit this one item */
                 /*         _foodEditMenu(meal, food); */
                 /*       }, */
                 /*       onTap: () { */

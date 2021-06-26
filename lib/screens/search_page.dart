@@ -18,6 +18,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar('Search'),
+      // FIX: Overflow on right side
       body: Column(
         children: [
           Padding(

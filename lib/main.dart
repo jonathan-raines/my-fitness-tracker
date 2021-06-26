@@ -5,7 +5,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'screens/home_page.dart';
 import 'screens/login_screen.dart';
 import 'screens/meal_page.dart';
+import 'screens/product_details.dart';
 import 'screens/registration_screen.dart';
+import 'screens/search_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,8 +26,8 @@ class NutritiOWN extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegistrationScreen(),
         '/diary': (context) => Meals(),
-        /* '/search': (context) => SearchPage(), */
-        /* '/details': (context) => ProductDetails(), */
+        '/search': (context) => SearchPage(),
+        '/details': (context) => ProductDetails(),
         /* '/custom': (context) => CustomProductForm(), */
       },
     );

@@ -21,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(
             height: 48,
           ),
+          // FIX: Keyboard overflows
           TextField(
             keyboardType: TextInputType.emailAddress,
             textAlign: TextAlign.center,
@@ -42,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
               password = value;
             },
           ),
-          // TODO add password verification field
+          // TODO: add password verification field
           RoundedButton(
             color: Colors.lightGreen,
             title: 'Login',
