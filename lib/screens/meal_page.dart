@@ -141,30 +141,30 @@ class _MealsState extends State<Meals> {
                     style: mealLabelsTextStyle,
                   ),
                 );
-                /* for (var food in meal.data()['foods']) { */
-                /*   mealWidgets.add( */
-                /*     ListTile( */
-                /*       title: Text( */
-                /*         '${food['productName']}', */
-                /*         style: foodLabelTextStyle, */
-                /*       ), */
-                /*       trailing: Text( */
-                /*         'Servings: ${food['loggedServings']}', */
-                /*         style: foodLabelTextStyle, */
-                /*       ), */
-                /*       subtitle: caloriesByGramOrServing(food), */
-                /*       onLongPress: () { */
-                /*         // TODO: query document for this item and edit this one item */
-                /*         _foodEditMenu(meal, food); */
-                /*       }, */
-                /*       onTap: () { */
-                /*         Navigator.pushNamed(context, '/details', */
-                /*             arguments: */
-                /*                 productFromMap(food, food['nutriments'])); */
-                /*       }, */
-                /*     ), */
-                /*   ); */
-                /* } */
+                for (var food in meal.get('foods')) {
+                  mealWidgets.add(
+                    ListTile(
+                      title: Text(
+                        '${food['productName']}',
+                        style: foodLabelTextStyle,
+                      ),
+                      trailing: Text(
+                        'Servings: ${food['loggedServings']}',
+                        style: foodLabelTextStyle,
+                      ),
+                      subtitle: caloriesByGramOrServing(food),
+                      onLongPress: () {
+                        // TODO: query document for this item and edit this one item
+                        _foodEditMenu(meal, food);
+                      },
+                      onTap: () {
+                        Navigator.pushNamed(context, '/details',
+                            arguments:
+                                productFromMap(food, food['nutriments']));
+                      },
+                    ),
+                  );
+                }
               }
               mealWidgets.add(ListTile(
                 title: Text(

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'screens/custom_food.dart';
 import 'screens/home_page.dart';
 import 'screens/login_screen.dart';
 import 'screens/meal_page.dart';
@@ -28,7 +29,7 @@ class NutritiOWN extends StatelessWidget {
         '/diary': (context) => Meals(),
         '/search': (context) => SearchPage(),
         '/details': (context) => ProductDetails(),
-        /* '/custom': (context) => CustomProductForm(), */
+        '/custom': (context) => CustomProductForm(),
       },
     );
   }
