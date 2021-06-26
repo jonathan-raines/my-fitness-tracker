@@ -1,14 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:my_fitness_tracker/screens/custom_food.dart';
-import 'package:my_fitness_tracker/screens/meal_page.dart';
 
 import 'screens/home_page.dart';
 import 'screens/login_screen.dart';
+import 'screens/meal_page.dart';
+import 'screens/product_details.dart';
 import 'screens/registration_screen.dart';
 import 'screens/search_page.dart';
-import 'screens/product_details.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +28,7 @@ class NutritiOWN extends StatelessWidget {
         '/diary': (context) => Meals(),
         '/search': (context) => SearchPage(),
         '/details': (context) => ProductDetails(),
-        '/custom': (context) => CustomProductForm(),
+        /* '/custom': (context) => CustomProductForm(), */
       },
     );
   }

@@ -11,7 +11,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool showSpinner = false;
   String email, password;
   @override
   Widget build(BuildContext context) {
@@ -22,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(
             height: 48,
           ),
+          // FIX: Keyboard overflows
           TextField(
             keyboardType: TextInputType.emailAddress,
             textAlign: TextAlign.center,
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
               password = value;
             },
           ),
-          // TODO add password verification field
+          // TODO: add password verification field
           RoundedButton(
             color: Colors.lightGreen,
             title: 'Login',
@@ -53,8 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     .signInWithEmailAndPassword(
                         email: email, password: password);
 
-                if (userCredential != null &&
-                    FirebaseAuth.instance.currentUser.emailVerified) {
+                if (userCredential != null) {
+                  // &&
+                  // FirebaseAuth.instance.currentUser.emailVerified) {
                   Navigator.pushReplacementNamed(context, '/diary');
                 }
               } on FirebaseAuthException catch (e) {

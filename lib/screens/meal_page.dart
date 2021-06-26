@@ -134,37 +134,37 @@ class _MealsState extends State<Meals> {
               totalFats = 0;
 
               for (var meal in meals) {
-                // TODO enable user to add food to selected meal id by clicking on heading
+                // TODO: enable user to add food to selected meal id by clicking on heading
                 mealWidgets.add(
                   Text(
                     '${meal.id}',
                     style: mealLabelsTextStyle,
                   ),
                 );
-                for (var food in meal.data()['foods']) {
-                  mealWidgets.add(
-                    ListTile(
-                      title: Text(
-                        '${food['productName']}',
-                        style: foodLabelTextStyle,
-                      ),
-                      trailing: Text(
-                        'Servings: ${food['loggedServings']}',
-                        style: foodLabelTextStyle,
-                      ),
-                      subtitle: caloriesByGramOrServing(food),
-                      onLongPress: () {
-                        // TODO query document for this item and edit this one item
-                        _foodEditMenu(meal, food);
-                      },
-                      onTap: () {
-                        Navigator.pushNamed(context, '/details',
-                            arguments:
-                                productFromMap(food, food['nutriments']));
-                      },
-                    ),
-                  );
-                }
+                /* for (var food in meal.data()['foods']) { */
+                /*   mealWidgets.add( */
+                /*     ListTile( */
+                /*       title: Text( */
+                /*         '${food['productName']}', */
+                /*         style: foodLabelTextStyle, */
+                /*       ), */
+                /*       trailing: Text( */
+                /*         'Servings: ${food['loggedServings']}', */
+                /*         style: foodLabelTextStyle, */
+                /*       ), */
+                /*       subtitle: caloriesByGramOrServing(food), */
+                /*       onLongPress: () { */
+                /*         // TODO: query document for this item and edit this one item */
+                /*         _foodEditMenu(meal, food); */
+                /*       }, */
+                /*       onTap: () { */
+                /*         Navigator.pushNamed(context, '/details', */
+                /*             arguments: */
+                /*                 productFromMap(food, food['nutriments'])); */
+                /*       }, */
+                /*     ), */
+                /*   ); */
+                /* } */
               }
               mealWidgets.add(ListTile(
                 title: Text(
